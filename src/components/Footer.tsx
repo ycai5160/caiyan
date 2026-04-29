@@ -27,7 +27,7 @@ export default function Footer() {
       });
 
       const split = new SplitText(nameRef.current, { type: "lines,chars", mask: "lines" });
-      split.masks.forEach(m => m.style.setProperty("overflow-clip-margin", "0.2em"));
+      split.masks.forEach(m => (m as HTMLElement).style.setProperty("overflow-clip-margin", "0.2em"));
       gsap.from(split.chars, {
         yPercent: 120, stagger: { each: 0.03, from: "start" }, duration: 0.6, ease: "power3.out",
         scrollTrigger: st, delay: 0.15,
