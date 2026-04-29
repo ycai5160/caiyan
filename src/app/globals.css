@@ -1,26 +1,65 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --breakpoint-xs: 400px;
+
+  --font-jakarta: var(--_font-jakarta), "Plus Jakarta Sans", sans-serif;
+  --font-caslon: var(--_font-caslon), "Libre Caslon Text", serif;
+  /* 思源黑体 / Siyuan Heiti = Source Han Sans SC (Google: Noto Sans SC) */
+  --font-siyuan: var(--_font-siyuan), "Noto Sans SC", "Source Han Sans SC", sans-serif;
+  /* Azeret Mono for small EN labels — Noto Sans SC in fallback so CJK stays consistent in mixed strings */
+  --font-mono: var(--_font-mono), "Azeret Mono", "Noto Sans SC", monospace;
+
+  /*
+   * Warm neutral palette — OKLCH keeps hue/chroma constant while varying
+   * lightness, so the palette feels physically coherent rather than
+   * computationally blended.
+   *
+   * Hue 68° sits between yellow and orange — warm amber-ochre territory.
+   * Chroma is intentionally tiny so the tint reads as "quality paper / warm
+   * ink" rather than an obvious color. The effect is felt, not named.
+   *
+   * All Tailwind utilities (bg-white, text-black, bg-black/[0.08], etc.)
+   * resolve through these tokens, so the warmth propagates everywhere
+   * without touching component code.
+   */
+  --color-white: oklch(98% 0.008 75);   /* warm cream — printing paper, not screen glare */
+  --color-black: oklch(11% 0.02 58);    /* warm near-black — ink, not void */
+
+  --color-orange: oklch(68% 0.18 52);       /* warm amber-orange accent */
+  --color-orange-dark: oklch(58% 0.17 52);  /* deeper orange for hover / dark contexts */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  /* Lenis owns smooth scroll — native scroll-behavior: smooth conflicts with it */
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  font-family: var(--font-jakarta);
+}
+
+/* Prevent FOUC for skill items */
+.skill-item {
+  will-change: color;
+}
+
+/* Smooth image rendering */
+img {
+  image-rendering: auto;
+}
+
+/* Orbit button text ring rotation */
+@keyframes orbit-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Hide scrollbar — Lenis drives scroll, the native UI is redundant noise */
+html {
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* legacy Edge */
+}
+html::-webkit-scrollbar {
+  display: none;                  /* Chrome / Safari */
 }
