@@ -61,7 +61,7 @@ export default function WebDesignSection() {
       gsap.from(labelRowRef.current, { opacity: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st });
 
       const split = new SplitText(headingRef.current, { type: "lines,chars", mask: "lines" });
-      split.masks.forEach(m => m.style.setProperty("overflow-clip-margin", "0.2em"));
+      split.masks.forEach(m => (m as HTMLElement).style.setProperty("overflow-clip-margin", "0.2em"));
       gsap.from(split.chars, {
         yPercent: 120, stagger: { each: 0.02, from: "start" }, duration: 0.7, ease: "power3.out",
         scrollTrigger: st, delay: 0.1,

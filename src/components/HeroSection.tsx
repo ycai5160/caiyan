@@ -120,7 +120,7 @@ export default function HeroSection() {
       // Extend clip 0.2em below each line mask so descenders (g, y, p…) aren't cut.
       // yPercent start = 100 + (0.2 × 100) = 120 — lines invisible at t=0 at any fluid size.
       split.masks.forEach((m) => {
-        m.style.setProperty("overflow-clip-margin", "0.2em");
+        (m as HTMLElement).style.setProperty("overflow-clip-margin", "0.2em");
       });
 
       const tl = gsap.timeline();
