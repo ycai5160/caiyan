@@ -46,12 +46,12 @@ export default function ProjectSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen bg-white flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen md:h-screen bg-white flex items-center justify-center overflow-hidden"
     >
-      {/* Black card — scales 0.5 → 1 and un-rounds from 32px → 0 as the section scrolls through */}
+      {/* Black card — scales 0.8 → 1 and un-rounds from 64px → 0 as the section scrolls through */}
       <div
         ref={cardRef}
-        className="w-full h-full bg-black text-white p-5 sm:p-8 md:p-20 flex flex-col justify-between md:flex-row overflow-hidden will-change-transform"
+        className="w-full md:h-full bg-black text-white p-5 sm:p-8 md:p-20 flex flex-col gap-8 justify-between md:flex-row md:gap-0 overflow-hidden will-change-transform"
         style={{ transform: "scale(0.5)", borderRadius: 32, transformOrigin: "center center" }}
       >
 
@@ -149,7 +149,7 @@ export default function ProjectSection() {
         </div>
 
         {/* Right: product mockup — landscape crop on mobile, full-height portrait on desktop */}
-        <div className="w-full aspect-[16/9] shrink-0 overflow-hidden md:w-auto md:h-full md:aspect-[3/4]">
+        <div className="w-full aspect-[4/3] shrink-0 overflow-hidden md:w-auto md:h-full md:aspect-[3/4]">
           <img
             src={PROJECT_IMAGE}
             alt="Subtle 视频字幕转写编辑平台 — 产品界面截图"

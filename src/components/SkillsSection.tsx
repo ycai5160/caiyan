@@ -32,12 +32,13 @@ export default function SkillsSection() {
   const listWrapperRef  = useRef<HTMLDivElement>(null);
   const listButtonRefs  = useRef<(HTMLButtonElement | null)[]>([]);
   const listTextRefs    = useRef<(HTMLSpanElement | null)[]>([]);
-  const imageRefs       = useRef<(HTMLImageElement | null)[]>([]);
-  const toolPanelRefs   = useRef<(HTMLElement | null)[]>([]);
-  const currentIdxRef   = useRef(0);
-  const imageColRef     = useRef<HTMLDivElement>(null);
-  const mobileLabelRef  = useRef<HTMLSpanElement>(null);
-  const toolColRef      = useRef<HTMLDivElement>(null);
+  const imageRefs            = useRef<(HTMLImageElement | null)[]>([]);
+  const toolPanelRefs        = useRef<(HTMLElement | null)[]>([]);
+  const mobileToolPanelRefs  = useRef<(HTMLSpanElement | null)[]>([]);
+  const currentIdxRef        = useRef(0);
+  const imageColRef          = useRef<HTMLDivElement>(null);
+  const mobileLabelRef       = useRef<HTMLSpanElement>(null);
+  const toolColRef           = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
   const ctx = gsap.context(() => {
@@ -84,6 +85,11 @@ export default function SkillsSection() {
       if (prevPanel) gsap.to(prevPanel, { opacity: 0, duration: 0.18, ease: "none" });
       if (nextPanel) gsap.to(nextPanel, { opacity: 1, duration: 0.18, ease: "none" });
 
+      const prevMobileTool = mobileToolPanelRefs.current[prevIdx];
+      const nextMobileTool = mobileToolPanelRefs.current[nextIdx];
+      if (prevMobileTool) gsap.to(prevMobileTool, { opacity: 0, duration: 0.18, ease: "none" });
+      if (nextMobileTool) gsap.to(nextMobileTool, { opacity: 1, duration: 0.18, ease: "none" });
+
       const prevImg = imageRefs.current[prevIdx];
       const nextImg = imageRefs.current[nextIdx];
 
@@ -115,6 +121,11 @@ export default function SkillsSection() {
     });
 
     toolPanelRefs.current.forEach((el, i) => {
+      if (!el) return;
+      gsap.set(el, { opacity: i === 0 ? 1 : 0 });
+    });
+
+    mobileToolPanelRefs.current.forEach((el, i) => {
       if (!el) return;
       gsap.set(el, { opacity: i === 0 ? 1 : 0 });
     });
@@ -166,14 +177,27 @@ export default function SkillsSection() {
       id="skills"
       className="h-screen bg-white overflow-hidden flex flex-col md:flex-row p-5 md:p-10"
     >
-      {/* Mobile-only label — desktop version lives inside the image column */}
-      <span
-        ref={mobileLabelRef}
-        className="md:hidden shrink-0 text-[10px] uppercase tracking-[0.18em] text-black/35 font-medium mb-4"
-        style={{ fontFamily: "var(--font-mono)" }}
-      >
-        技能 / Skills
-      </span>
+      {/* Mobile-only header: label + active tool name */}
+      <div className="md:hidden shrink-0 flex flex-col gap-[6px] mb-4">
+        <span
+          ref={mobileLabelRef}
+          className="text-[10px] uppercase tracking-[0.18em] text-black/35 font-medium"
+          style={{ fontFamily: "var(--font-mono)" }}
+        >
+          技能 / Skills
+        </span>
+        <div className="relative h-[14px]" style={{ fontFamily: "var(--font-mono)" }}>
+          {SKILLS.map((skill, i) => (
+            <span
+              key={`mobile-tool-${skill.zh}`}
+              ref={(el) => { mobileToolPanelRefs.current[i] = el; }}
+              className="absolute left-0 text-[10px] uppercase tracking-[0.14em] text-black/25 whitespace-nowrap font-medium"
+            >
+              {skill.tool}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* col 1: skill images — hidden on mobile */}
       <div ref={imageColRef} className="hidden md:flex flex-1 flex-col justify-center">

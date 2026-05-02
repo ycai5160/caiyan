@@ -45,7 +45,7 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer ref={footerRef} className="bg-black text-white px-10 pt-16 pb-10">
+    <footer ref={footerRef} className="bg-black text-white px-5 sm:px-8 md:px-10 pt-16 pb-10">
       {/* Top rule */}
       
 

@@ -265,7 +265,7 @@ export default function HeroSection() {
       <div className="relative mt-4 md:mt-10 z-10">
         <h1 ref={headlineRef} style={{ opacity: 0 }}>
           <span className="block pb-[0.04em] text-[clamp(36px,10vw,140px)] font-medium leading-[1.1] tracking-[-0.065em] text-black">
-            UX<span aria-hidden="true" style={{ fontSize: "0.45em", verticalAlign: "0.4em", margin: "0 0.15em", opacity: 0.75 }}>✳</span>UI{" "}
+            UX<span aria-hidden="true" style={{ fontSize: "0.45em", verticalAlign: "0.4em", margin: "0 0.15em", opacity: 0.75 }}>{"✳︎"}</span>UI{" "}
             <em className="font-normal" style={{ fontFamily: "var(--font-caslon)", fontStyle: "italic" }}>
               Designer
             </em>
@@ -302,7 +302,7 @@ export default function HeroSection() {
           {/* Right: description */}
           <p
             ref={descRef}
-            className="text-[12px] text-justify leading-[1.8] text-black/70 max-w-[52ch] h-auto"
+            className="text-[10px] text-justify leading-[1.8] text-black/70 max-w-[52ch] h-auto md:text-[12px]"
             style={{ fontFamily: "var(--font-siyuan)", opacity: 0 }}
           >
             我是一名UX/UI设计师，在视觉与交互设计上有扎实积累，同时具备前端开发视角，能与产品、工程团队高效对齐。热衷探索AI在设计流程中的应用，让创意从概念到落地既快又准。

@@ -1,275 +1,202 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import type { Swiper as SwiperType } from "swiper";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
+import "swiper/css";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const PROJECTS = [
-  { id: 1, en: "Brandform", zh: "SaaS 落地页",     tag: "Web Design" },
-  { id: 2, en: "Meridian",  zh: "电商体验设计",    tag: "E-Commerce" },
-  { id: 3, en: "Pulse",     zh: "数据仪表盘",      tag: "Dashboard" },
-  { id: 4, en: "Canvas",    zh: "创意工作室主页",  tag: "Agency" },
-  { id: 5, en: "Aperture",  zh: "摄影作品集",      tag: "Portfolio" },
-  { id: 6, en: "Cadence",   zh: "播客节目站点",    tag: "Editorial" },
+  { id: 1,  en: "Sonic AI",              zh: "AI 语音助手",   thumb: "/thumbnail_sonicai.png",      url: "https://designer789.github.io/Sonic-AI/" },
+  { id: 2,  en: "Solara Processing Unit", zh: "处理器单元",    thumb: "/thumbnail_sopu.png",         url: "https://designer789.github.io/SoPU/" },
+  { id: 3,  en: "RankChain",             zh: "企业信用平台",  thumb: "/thumbnail_rankchain.png",    url: "https://rankchainv3.vercel.app/" },
+  { id: 4,  en: "Info.Launch",           zh: "产品发布官网",  thumb: "/thumbnail_infolaunch_2.png", url: "https://www.infolaunch.vip/" },
+  { id: 5,  en: "PrivAI",                zh: "AI 隐私工具",   thumb: "/thumbnail_privai_2.png",     url: "https://priv-ai-phi.vercel.app/" },
+  { id: 6,  en: "Cred.Hub",              zh: "信用管理平台",  thumb: "/thumbnail_credhub.png",      url: "https://www.credhub.xyz/" },
+  { id: 7,  en: "Pulse",                 zh: "社交平台",      thumb: "/thumbnail_pulse.png",        url: "https://designer789.github.io/Pulse/" },
+  { id: 8,  en: "OCULARAI",              zh: "AI 视觉工具",   thumb: "/thumbnail_ocularai.png",     url: "https://ocular-ai.vercel.app/" },
+  { id: 9,  en: "Met.AI",                zh: "数字货币平台",  thumb: "/thumbnail_metai.png",        url: "https://www.metcoin.xyz/" },
+  { id: 10, en: "lol.Forge",             zh: "游戏平台",      thumb: "/thumbnail_lolforge.png",     url: "https://lolforge.vercel.app/" },
 ];
-
-const GAP = 24;
-
-function getVisibleCount(w: number) {
-  if (w >= 1024) return 4;
-  if (w >= 768) return 2;
-  return 1.15;
-}
 
 export default function WebDesignSection() {
   const sectionRef  = useRef<HTMLElement>(null);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const trackRef    = useRef<HTMLDivElement>(null);
-  const labelRowRef = useRef<HTMLDivElement>(null);
+  const kickerRef   = useRef<HTMLDivElement>(null);
   const headingRef  = useRef<HTMLHeadingElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<HTMLDivElement>(null);
+  const captionRef  = useRef<HTMLDivElement>(null);
+  const swiperRef   = useRef<SwiperType | null>(null);
 
-  const [index, setIndex]               = useState(0);
-  const [visibleCount, setVisibleCount] = useState(4);
-  const [cardWidth, setCardWidth]       = useState(0);
-  const [isDragging, setIsDragging]     = useState(false);
+  const [index, setIndex]             = useState(0);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd]             = useState(false);
+  const [hoverIndex, setHoverIndex]   = useState<number | null>(null);
 
-  const indexRef        = useRef(0);
-  const cardWidthRef    = useRef(0);
-  const visibleCountRef = useRef(4);
-  const xRef            = useRef(0);
-  const setXRef         = useRef<(v: number) => void>(() => {});
-  const dragStartX      = useRef(0);
-  const dragStartTx     = useRef(0);
-  const draggingRef     = useRef(false);
-  const tweenRef        = useRef<gsap.core.Tween | null>(null);
-
-  const floorVC = Math.floor(visibleCount);
-  const maxIndex = Math.max(0, PROJECTS.length - floorVC);
-
-  // ── Scroll-triggered entrance animations ──────────────────────────────
+  // ── Entrance animations ───────────────────────────────────────────────────
   useEffect(() => {
-    if (!sectionRef.current || !headingRef.current) return;
+    if (!sectionRef.current) return;
+
+    if (headingRef.current) {
+      gsap.set(headingRef.current, { opacity: 1 });
+    }
+
     const mm = gsap.matchMedia();
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
       const st = { trigger: sectionRef.current!, start: "top 75%", once: true };
 
-      gsap.from(labelRowRef.current, { opacity: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st });
+      gsap.from(kickerRef.current, { opacity: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st });
 
-      const split = new SplitText(headingRef.current, { type: "lines,chars", mask: "lines" });
-      split.masks.forEach(m => (m as HTMLElement).style.setProperty("overflow-clip-margin", "0.2em"));
-      gsap.from(split.chars, {
-        yPercent: 120, stagger: { each: 0.02, from: "start" }, duration: 0.7, ease: "power3.out",
-        scrollTrigger: st, delay: 0.1,
-      });
+      let split: SplitText | null = null;
+      if (headingRef.current) {
+        split = new SplitText(headingRef.current, { type: "lines,chars", mask: "lines" });
+        split.masks.forEach((m) => {
+          (m as HTMLElement).style.setProperty("overflow-clip-margin", "0.2em");
+        });
+        gsap.from(split.chars, {
+          yPercent: 120,
+          stagger: { each: 0.04, from: "start" },
+          duration: 0.75,
+          ease: "power3.out",
+          scrollTrigger: st,
+          delay: 0.1,
+        });
+      }
 
-      gsap.from(viewportRef.current, { opacity: 0, y: 16, duration: 0.65, ease: "power2.out", scrollTrigger: st, delay: 0.3 });
-      gsap.from(controlsRef.current, { opacity: 0,        duration: 0.5,  ease: "power2.out", scrollTrigger: st, delay: 0.45 });
+      gsap.from(carouselRef.current, { opacity: 0, y: 20, duration: 0.65, ease: "power2.out", scrollTrigger: st, delay: 0.35 });
+      gsap.from(controlsRef.current, { opacity: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st, delay: 0.55 });
 
-      return () => { split.revert(); };
+      return () => { split?.revert(); };
     });
 
     return () => mm.revert();
   }, []);
 
-  // ── Initialize GSAP setter once ────────────────────────────────────────
+  // ── Caption: follows hovered card, falls back to snapped index ────────────
+  const displayIndex = hoverIndex ?? index;
+  const currentPage  = displayIndex + 1;
+  const active       = PROJECTS[Math.min(displayIndex, PROJECTS.length - 1)];
+
+  const isFirstCaption = useRef(true);
   useEffect(() => {
-    if (!trackRef.current) return;
-    setXRef.current = gsap.quickSetter(trackRef.current, "x", "px") as (v: number) => void;
-  }, []);
+    if (isFirstCaption.current) { isFirstCaption.current = false; return; }
+    if (!captionRef.current) return;
+    gsap.fromTo(captionRef.current,
+      { opacity: 0, y: 6 },
+      { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", overwrite: "auto" }
+    );
+  }, [displayIndex]);
 
-  // ── Measure viewport & compute card width ──────────────────────────────
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    if (!viewport) return;
-
-    const measure = () => {
-      const vc = getVisibleCount(window.innerWidth);
-      const vw = viewport.clientWidth;
-      const cw = (vw - GAP * (vc - 1)) / vc;
-
-      visibleCountRef.current = vc;
-      cardWidthRef.current    = cw;
-      setVisibleCount(vc);
-      setCardWidth(cw);
-
-      // Re-clamp index and snap track to new position
-      const newMax  = Math.max(0, PROJECTS.length - Math.floor(vc));
-      const clamped = Math.min(indexRef.current, newMax);
-      indexRef.current = clamped;
-      setIndex(clamped);
-
-      const x = -clamped * (cw + GAP);
-      xRef.current = x;
-      setXRef.current(x);
-    };
-
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(viewport);
-    window.addEventListener("resize", measure);
-
-    // Let carousel layout settle, then recalculate any ScrollTriggers
-    // that may have been created before the track had its final height.
-    const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
-
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-      cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  // ── Snap to a specific index ────────────────────────────────────────────
-  const tweenTo = useCallback((target: number) => {
-    const max     = Math.max(0, PROJECTS.length - Math.floor(visibleCountRef.current));
-    const clamped = Math.max(0, Math.min(target, max));
-    const step    = cardWidthRef.current + GAP;
-    const destX   = -clamped * step;
-
-    indexRef.current = clamped;
-    setIndex(clamped);
-
-    tweenRef.current?.kill();
-    const proxy = { x: xRef.current };
-    tweenRef.current = gsap.to(proxy, {
-      x: destX,
-      duration: 0.55,
-      ease: "power3.out",
-      onUpdate: () => {
-        xRef.current = proxy.x;
-        setXRef.current(proxy.x);
-      },
-    });
-  }, []);
-
-  // ── Pointer drag ───────────────────────────────────────────────────────
-  const onPointerDown = (e: React.PointerEvent) => {
-    if (!trackRef.current) return;
-    trackRef.current.setPointerCapture(e.pointerId);
-    tweenRef.current?.kill();
-    draggingRef.current = true;
-    setIsDragging(true);
-    dragStartX.current  = e.clientX;
-    dragStartTx.current = xRef.current;
+  // ── Sync Swiper state into React ──────────────────────────────────────────
+  const syncState = (swiper: SwiperType) => {
+    setIndex(swiper.activeIndex);
+    setIsBeginning(swiper.isBeginning);
+    setIsEnd(swiper.isEnd);
   };
-
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!draggingRef.current) return;
-    const step = cardWidthRef.current + GAP;
-    const max  = Math.max(0, PROJECTS.length - Math.floor(visibleCountRef.current));
-    const minX = -max * step;
-    const maxX = 0;
-
-    let x = dragStartTx.current + (e.clientX - dragStartX.current);
-    if (x > maxX) x = maxX + (x - maxX) * 0.35;
-    if (x < minX) x = minX + (x - minX) * 0.35;
-
-    xRef.current = x;
-    setXRef.current(x);
-  };
-
-  const onPointerUp = (e: React.PointerEvent) => {
-    if (!draggingRef.current) return;
-    draggingRef.current = false;
-    setIsDragging(false);
-    if (trackRef.current?.hasPointerCapture(e.pointerId)) {
-      trackRef.current.releasePointerCapture(e.pointerId);
-    }
-    const step    = cardWidthRef.current + GAP;
-    const nearest = Math.round(-xRef.current / step);
-    tweenTo(nearest);
-  };
-
-  const prev = () => tweenTo(indexRef.current - 1);
-  const next = () => tweenTo(indexRef.current + 1);
-
-  const totalPages  = Math.max(1, PROJECTS.length - floorVC + 1);
-  const currentPage = index + 1;
 
   return (
     <section
       ref={sectionRef}
       id="webdesign"
-      className="relative min-h-screen bg-white flex flex-col p-5 sm:p-8 lg:p-10 justify-center"
+      className="relative min-h-screen bg-white flex flex-col"
     >
-      {/* Label row — mirrors ProjectSection's editorial header */}
-      <div ref={labelRowRef} className="border-t border-black/[0.08] pt-5 flex items-center justify-between mb-6 md:mb-10">
-        <span
-          className="text-[10px] uppercase tracking-[0.24em] text-black/30 font-medium"
-          style={{ fontFamily: "var(--font-mono)" }}
-        >
-          Selected Works
-        </span>
-      </div>
-
-      {/* Heading */}
-      <h2
-        ref={headingRef}
-        className="font-medium tracking-[-0.035em] leading-[1.05] mb-8 md:mb-14 text-black"
-        style={{ fontSize: "clamp(32px, 5.5vw, 72px)", fontFamily: "var(--font-siyuan)" }}
-      >
-        网页设计作品
-      </h2>
-
-      {/* Carousel viewport */}
-      <div ref={viewportRef} className="overflow-hidden w-full">
-        <div
-          ref={trackRef}
-          className="flex gap-6 select-none touch-pan-y"
-          style={{
-            cursor: isDragging ? "grabbing" : "grab",
-            willChange: "transform",
-          }}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
-        >
-          {PROJECTS.map((p) => (
-            <div
-              key={p.id}
-              className="shrink-0"
-              style={{ width: cardWidth ? `${cardWidth}px` : undefined }}
-            >
-              <div className="bg-black/[0.06] rounded-2xl overflow-hidden aspect-[3/4] mb-4" />
-              <p
-                className="text-[10px] uppercase tracking-[0.16em] text-black/30 font-medium mb-1"
-                style={{ fontFamily: "var(--font-mono)" }}
-              >
-                {p.tag}
-              </p>
-              <p className="text-[15px] font-medium tracking-tight text-black leading-snug">
-                {p.en}
-              </p>
-              <p
-                className="text-[13px] text-black/40 leading-snug mt-0.5"
-                style={{ fontFamily: "var(--font-siyuan)" }}
-              >
-                {p.zh}
-              </p>
-            </div>
-          ))}
+      {/* Top: kicker label + big display heading */}
+      <div className="px-5 sm:px-8 lg:px-10 pt-8 shrink-0">
+        <div ref={kickerRef} className="border-t border-black/[0.08] pt-4">
+          <span
+            className="text-[10px] uppercase tracking-[0.24em] text-black/30 font-medium"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            Selected Works
+          </span>
         </div>
+
+        <h2
+          ref={headingRef}
+          className="mt-2 pb-[0.04em] text-black font-medium text-[clamp(48px,9vw,120px)] leading-[1.05] tracking-[-0.03em]"
+          style={{ fontFamily: "var(--font-siyuan)", opacity: 0 }}
+        >
+          网页设计作品
+        </h2>
       </div>
 
-      {/* Controls */}
-      <div ref={controlsRef} className="mt-8 md:mt-12 flex items-center justify-between">
-        <span
-          className="text-[11px] tracking-[0.18em] text-black/45"
-          style={{ fontFamily: "var(--font-mono)" }}
+      {/* Carousel */}
+      <div ref={carouselRef} className="flex-1 flex items-center py-8 min-w-0">
+        <Swiper
+          onSwiper={syncState}
+          onSlideChange={syncState}
+          spaceBetween={24}
+          grabCursor
+          breakpoints={{
+            0:    { slidesPerView: 1.15, slidesOffsetBefore: 20 },
+            768:  { slidesPerView: 1.8,  slidesOffsetBefore: 32 },
+            1024: { slidesPerView: 4.2,  slidesOffsetBefore: 40 },
+          }}
+          className="w-full"
         >
-          {String(currentPage).padStart(2, "0")} — {String(totalPages).padStart(2, "0")}
-        </span>
+          {PROJECTS.map((p, i) => (
+            <SwiperSlide key={p.id}>
+              <a
+                href={p.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={p.en}
+                onMouseEnter={() => setHoverIndex(i)}
+                onMouseLeave={() => setHoverIndex(null)}
+                draggable={false}
+                className="block group"
+              >
+                <div className="bg-black/[0.06] overflow-hidden aspect-[3/4] relative">
+                  <Image
+                    src={p.thumb}
+                    alt={p.en}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    draggable={false}
+                  />
+                </div>
+              </a>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
-        <div className="flex gap-3">
+      {/* Controls: running caption + prev/next */}
+      <div
+        ref={controlsRef}
+        className="px-5 sm:px-8 lg:px-10 pb-8 flex items-end justify-between shrink-0 gap-6"
+      >
+        <div ref={captionRef} className="min-w-0">
+          <span
+            className="block text-[11px] tracking-[0.18em] text-black/45"
+            style={{ fontFamily: "var(--font-mono)" }}
+          >
+            {String(currentPage).padStart(2, "0")} / {String(PROJECTS.length).padStart(2, "0")}
+          </span>
+          <span
+            className="mt-2 block text-[14px] font-medium text-black truncate"
+            style={{ fontFamily: "var(--font-jakarta)" }}
+          >
+            {active.en}
+          </span>
+          <span
+            className="block text-[12px] text-black/45 truncate"
+            style={{ fontFamily: "var(--font-siyuan)" }}
+          >
+            {active.zh}
+          </span>
+        </div>
+
+        <div className="flex gap-3 shrink-0">
           <button
-            onClick={prev}
-            disabled={index <= 0}
+            onClick={() => swiperRef.current?.slidePrev()}
+            disabled={isBeginning}
             aria-label="Previous project"
             className="w-11 h-11 rounded-full border border-black/15 flex items-center justify-center text-black transition-colors duration-200 hover:bg-black hover:text-white hover:border-black disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-black/15 disabled:cursor-not-allowed"
           >
@@ -278,8 +205,8 @@ export default function WebDesignSection() {
             </svg>
           </button>
           <button
-            onClick={next}
-            disabled={index >= maxIndex}
+            onClick={() => swiperRef.current?.slideNext()}
+            disabled={isEnd}
             aria-label="Next project"
             className="w-11 h-11 rounded-full border border-black/15 flex items-center justify-center text-black transition-colors duration-200 hover:bg-black hover:text-white hover:border-black disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-black/15 disabled:cursor-not-allowed"
           >
