@@ -1,217 +1,146 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import type { Swiper as SwiperType } from "swiper";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
+import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
 
-gsap.registerPlugin(ScrollTrigger, SplitText);
-
-const PROJECTS = [
-  { id: 1,  en: "Sonic AI",              zh: "AI 语音助手",   thumb: "/thumbnail_sonicai.png",      url: "https://designer789.github.io/Sonic-AI/" },
-  { id: 2,  en: "Solara Processing Unit", zh: "处理器单元",    thumb: "/thumbnail_sopu.png",         url: "https://designer789.github.io/SoPU/" },
-  { id: 3,  en: "RankChain",             zh: "企业信用平台",  thumb: "/thumbnail_rankchain.png",    url: "https://rankchainv3.vercel.app/" },
-  { id: 4,  en: "Info.Launch",           zh: "产品发布官网",  thumb: "/thumbnail_infolaunch_2.png", url: "https://www.infolaunch.vip/" },
-  { id: 5,  en: "PrivAI",                zh: "AI 隐私工具",   thumb: "/thumbnail_privai_2.png",     url: "https://priv-ai-phi.vercel.app/" },
-  { id: 6,  en: "Cred.Hub",              zh: "信用管理平台",  thumb: "/thumbnail_credhub.png",      url: "https://www.credhub.xyz/" },
-  { id: 7,  en: "Pulse",                 zh: "社交平台",      thumb: "/thumbnail_pulse.png",        url: "https://designer789.github.io/Pulse/" },
-  { id: 8,  en: "OCULARAI",              zh: "AI 视觉工具",   thumb: "/thumbnail_ocularai.png",     url: "https://ocular-ai.vercel.app/" },
-  { id: 9,  en: "Met.AI",                zh: "数字货币平台",  thumb: "/thumbnail_metai.png",        url: "https://www.metcoin.xyz/" },
-  { id: 10, en: "lol.Forge",             zh: "游戏平台",      thumb: "/thumbnail_lolforge.png",     url: "https://lolforge.vercel.app/" },
+const projects = [
+  { slug: "sopu",        title: "SOPU",       subtitle: "AI 语音助手", thumbnail: "/thumbnail_sopu.png" },
+  { slug: "infolaunch",  title: "InfoLaunch",  subtitle: "",           thumbnail: "/thumbnail_infolaunch.png" },
+  { slug: "privai",      title: "PrivAI",      subtitle: "",           thumbnail: "/thumbnail_privai.png" },
+  { slug: "lolforge",    title: "LolForge",    subtitle: "",           thumbnail: "/thumbnail_lolforge.png" },
+  { slug: "ocularai",    title: "OcularAI",    subtitle: "",           thumbnail: "/thumbnail_ocularai.png" },
+  { slug: "rankchain",   title: "RankChain",   subtitle: "",           thumbnail: "/thumbnail_rankchain.png" },
+  { slug: "metai",       title: "MetAI",       subtitle: "",           thumbnail: "/thumbnail_metai.png" },
+  { slug: "pulse",       title: "Pulse",       subtitle: "",           thumbnail: "/thumbnail_pulse.png" },
+  { slug: "sonicai",     title: "SonicAI",     subtitle: "",           thumbnail: "/thumbnail_sonicai.png" },
+  { slug: "credhub",     title: "CredHub",     subtitle: "",           thumbnail: "/thumbnail_credhub.png" },
 ];
 
+function Crosshair({ className }: { className: string }) {
+  return (
+    <div className={`absolute w-3 h-3 ${className}`} aria-hidden="true">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <line x1="6" y1="0"  x2="6" y2="12" stroke="rgba(255,255,255,0.35)" strokeWidth="1" />
+        <line x1="0" y1="6" x2="12"  y2="6" stroke="rgba(255,255,255,0.35)" strokeWidth="1" />
+      </svg>
+    </div>
+  );
+}
+
 export default function WebDesignSection() {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const kickerRef   = useRef<HTMLDivElement>(null);
-  const headingRef  = useRef<HTMLHeadingElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<HTMLDivElement>(null);
-  const captionRef  = useRef<HTMLDivElement>(null);
-  const swiperRef   = useRef<SwiperType | null>(null);
-
-  const [index, setIndex]             = useState(0);
-  const [isBeginning, setIsBeginning] = useState(true);
-  const [isEnd, setIsEnd]             = useState(false);
-  const [hoverIndex, setHoverIndex]   = useState<number | null>(null);
-
-  // ── Entrance animations ───────────────────────────────────────────────────
-  useEffect(() => {
-    if (!sectionRef.current) return;
-
-    if (headingRef.current) {
-      gsap.set(headingRef.current, { opacity: 1 });
-    }
-
-    const mm = gsap.matchMedia();
-
-    mm.add("(prefers-reduced-motion: no-preference)", () => {
-      const st = { trigger: sectionRef.current!, start: "top 75%", once: true };
-
-      gsap.from(kickerRef.current, { opacity: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st });
-
-      let split: SplitText | null = null;
-      if (headingRef.current) {
-        split = new SplitText(headingRef.current, { type: "lines,chars", mask: "lines" });
-        split.masks.forEach((m) => {
-          (m as HTMLElement).style.setProperty("overflow-clip-margin", "0.2em");
-        });
-        gsap.from(split.chars, {
-          yPercent: 120,
-          stagger: { each: 0.04, from: "start" },
-          duration: 0.75,
-          ease: "power3.out",
-          scrollTrigger: st,
-          delay: 0.1,
-        });
-      }
-
-      gsap.from(carouselRef.current, { opacity: 0, y: 20, duration: 0.65, ease: "power2.out", scrollTrigger: st, delay: 0.35 });
-      gsap.from(controlsRef.current, { opacity: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st, delay: 0.55 });
-
-      return () => { split?.revert(); };
-    });
-
-    return () => mm.revert();
-  }, []);
-
-  // ── Caption: follows hovered card, falls back to snapped index ────────────
-  const displayIndex = hoverIndex ?? index;
-  const currentPage  = displayIndex + 1;
-  const active       = PROJECTS[Math.min(displayIndex, PROJECTS.length - 1)];
-
-  const isFirstCaption = useRef(true);
-  useEffect(() => {
-    if (isFirstCaption.current) { isFirstCaption.current = false; return; }
-    if (!captionRef.current) return;
-    gsap.fromTo(captionRef.current,
-      { opacity: 0, y: 6 },
-      { opacity: 1, y: 0, duration: 0.45, ease: "expo.out", overwrite: "auto" }
-    );
-  }, [displayIndex]);
-
-  // ── Sync Swiper state into React ──────────────────────────────────────────
-  const syncState = (swiper: SwiperType) => {
-    setIndex(swiper.activeIndex);
-    setIsBeginning(swiper.isBeginning);
-    setIsEnd(swiper.isEnd);
-  };
+  const [realIndex, setRealIndex] = useState(0);
+  const swiperRef = useRef<SwiperClass | null>(null);
+  const active = projects[realIndex % projects.length];
 
   return (
     <section
-      ref={sectionRef}
-      id="webdesign"
-      className="relative min-h-screen bg-white flex flex-col"
+      id="web"
+      className="relative w-full flex flex-col gap-8 md:gap-10 py-10 md:py-16 bg-black"
     >
-      {/* Top: kicker label + big display heading */}
-      <div className="px-5 sm:px-8 lg:px-10 pt-8 shrink-0">
-        <div ref={kickerRef} className="border-t border-black/[0.08] pt-4">
-          <span
-            className="text-[10px] uppercase tracking-[0.24em] text-black/30 font-medium"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            Selected Works
-          </span>
-        </div>
-
-        <h2
-          ref={headingRef}
-          className="mt-2 pb-[0.04em] text-black font-medium text-[clamp(48px,9vw,120px)] leading-[1.05] tracking-[-0.03em]"
-          style={{ fontFamily: "var(--font-siyuan)", opacity: 0 }}
+      {/* Section label */}
+      <div
+        className="flex flex-col gap-0 md:gap-1 px-6 md:px-10 lg:px-16"
+      >
+        <p
+          className="font-bold leading-[1] text-[#1e1e1e] text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
+          style={{ fontFamily: "var(--font-sf-pro)" }}
         >
-          网页设计作品
-        </h2>
+          Website Design
+        </p>
+        <p
+          className="font-bold leading-5 text-[#f43e0c] text-[13px] md:text-[16px] tracking-[0.3rem]"
+          style={{ fontFamily: "var(--font-siyuan)" }}
+        >
+          网页设计项目
+        </p>
       </div>
 
-      {/* Carousel */}
-      <div ref={carouselRef} className="flex-1 flex items-center py-8 min-w-0">
+      {/* Carousel + static blueprint grid */}
+      <div className="relative border-t border-b border-[#1e1e1e]">
+
+        {/* Blueprint grid — static, sits above carousel */}
+        <div className="absolute inset-0 pointer-events-none z-10 flex items-stretch justify-center">
+          <div className="relative web-grid-col border-l border-r border-[rgba(255,255,255,0.1)]">
+            <Crosshair className="-top-1.5 -left-1.5" />
+            <Crosshair className="-top-1.5 -right-1.5" />
+            <Crosshair className="-bottom-1.5 -left-1.5" />
+            <Crosshair className="-bottom-1.5 -right-1.5" />
+          </div>
+        </div>
+
         <Swiper
-          onSwiper={syncState}
-          onSlideChange={syncState}
-          spaceBetween={24}
-          grabCursor
-          breakpoints={{
-            0:    { slidesPerView: 1.15, slidesOffsetBefore: 20 },
-            768:  { slidesPerView: 1.8,  slidesOffsetBefore: 32 },
-            1024: { slidesPerView: 4.2,  slidesOffsetBefore: 40 },
-          }}
-          className="w-full"
+          centeredSlides
+          slidesPerView="auto"
+          spaceBetween={0}
+          loop
+          speed={600}
+          onSwiper={(s) => { swiperRef.current = s; }}
+          onSlideChange={(s) => setRealIndex(s.realIndex)}
+          className="web-carousel w-full"
         >
-          {PROJECTS.map((p, i) => (
-            <SwiperSlide key={p.id}>
-              <a
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={p.en}
-                onMouseEnter={() => setHoverIndex(i)}
-                onMouseLeave={() => setHoverIndex(null)}
-                draggable={false}
-                className="block group"
-              >
-                <div className="bg-black/[0.06] overflow-hidden aspect-[3/4] relative">
-                  <Image
-                    src={p.thumb}
-                    alt={p.en}
-                    fill
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                    draggable={false}
+          {projects.map((p) => (
+            <SwiperSlide key={p.slug}>
+              <div className="slide-inner px-4 py-8 md:px-5 md:py-10">
+                <div className="aspect-[3/4] relative overflow-hidden">
+                  <img
+                    src={p.thumbnail}
+                    alt={p.title}
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </div>
-              </a>
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
       </div>
 
-      {/* Controls: running caption + prev/next */}
-      <div
-        ref={controlsRef}
-        className="px-5 sm:px-8 lg:px-10 pb-8 flex items-end justify-between shrink-0 gap-6"
-      >
-        <div ref={captionRef} className="min-w-0">
-          <span
-            className="block text-[11px] tracking-[0.18em] text-black/45"
-            style={{ fontFamily: "var(--font-mono)" }}
-          >
-            {String(currentPage).padStart(2, "0")} / {String(PROJECTS.length).padStart(2, "0")}
-          </span>
-          <span
-            className="mt-2 block text-[14px] font-medium text-black truncate"
-            style={{ fontFamily: "var(--font-jakarta)" }}
-          >
-            {active.en}
-          </span>
-          <span
-            className="block text-[12px] text-black/45 truncate"
+      {/* Project label (left) + nav controls (right) */}
+      <div className="flex items-center justify-between px-6 md:px-10 lg:px-16">
+        <div className="flex flex-col gap-1">
+          <p
+            className="text-white text-[14px] tracking-[-0.28px]"
             style={{ fontFamily: "var(--font-siyuan)" }}
           >
-            {active.zh}
-          </span>
+            {active.title}
+          </p>
+          {active.subtitle && (
+            <p
+              className="text-[#747474] text-[14px] tracking-[-0.28px]"
+              style={{ fontFamily: "var(--font-siyuan)" }}
+            >
+              {active.subtitle}
+            </p>
+          )}
         </div>
 
-        <div className="flex gap-3 shrink-0">
+        <div className="flex items-center gap-1">
           <button
             onClick={() => swiperRef.current?.slidePrev()}
-            disabled={isBeginning}
             aria-label="Previous project"
-            className="w-11 h-11 rounded-full border border-black/15 flex items-center justify-center text-black transition-colors duration-200 hover:bg-black hover:text-white hover:border-black disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-black/15 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-2 py-1 rounded-full border border-[#2a2a2a] text-[#747474] text-[18px] hover:border-[#555] hover:text-white transition-colors duration-200"
+            style={{ fontFamily: "var(--font-sf-pro)" }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M9 2L3.5 7l5.5 5" strokeLinecap="round" strokeLinejoin="round" />
+            {/* ↖ top-left arrow */}
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+              <line x1="9.5" y1="9.5" x2="1.5" y2="1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              <polyline points="6,1.5 1.5,1.5 1.5,6" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
+            previous
           </button>
+
           <button
             onClick={() => swiperRef.current?.slideNext()}
-            disabled={isEnd}
             aria-label="Next project"
-            className="w-11 h-11 rounded-full border border-black/15 flex items-center justify-center text-black transition-colors duration-200 hover:bg-black hover:text-white hover:border-black disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-black disabled:hover:border-black/15 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-2 py-1 rounded-full border border-[#2a2a2a] text-[#747474] text-[18px] hover:border-[#555] hover:text-white transition-colors duration-200"
+            style={{ fontFamily: "var(--font-sf-pro)" }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M5 2l5.5 5L5 12" strokeLinecap="round" strokeLinejoin="round" />
+            next
+            {/* ↗ top-right arrow */}
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+              <line x1="1.5" y1="9.5" x2="9.5" y2="1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              <polyline points="5,1.5 9.5,1.5 9.5,6" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>

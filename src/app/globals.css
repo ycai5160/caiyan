@@ -1,65 +1,45 @@
 @import "tailwindcss";
 
-@theme {
-  --breakpoint-xs: 400px;
-
-  --font-jakarta: var(--_font-jakarta), "Plus Jakarta Sans", sans-serif;
-  --font-caslon: var(--_font-caslon), "Libre Caslon Text", serif;
-  /* 思源黑体 / Siyuan Heiti = Source Han Sans SC (Google: Noto Sans SC) */
-  --font-siyuan: var(--_font-siyuan), "Noto Sans SC", "Source Han Sans SC", sans-serif;
-  /* Azeret Mono for small EN labels — Noto Sans SC in fallback so CJK stays consistent in mixed strings */
-  --font-mono: var(--_font-mono), "Azeret Mono", "Noto Sans SC", monospace;
-
-  /*
-   * Warm neutral palette — OKLCH keeps hue/chroma constant while varying
-   * lightness, so the palette feels physically coherent rather than
-   * computationally blended.
-   *
-   * Hue 68° sits between yellow and orange — warm amber-ochre territory.
-   * Chroma is intentionally tiny so the tint reads as "quality paper / warm
-   * ink" rather than an obvious color. The effect is felt, not named.
-   *
-   * All Tailwind utilities (bg-white, text-black, bg-black/[0.08], etc.)
-   * resolve through these tokens, so the warmth propagates everywhere
-   * without touching component code.
-   */
-  --color-white: oklch(98% 0.008 75);   /* warm cream — printing paper, not screen glare */
-  --color-black: oklch(11% 0.02 58);    /* warm near-black — ink, not void */
-
-  --color-orange: oklch(68% 0.18 52);       /* warm amber-orange accent */
-  --color-orange-dark: oklch(58% 0.17 52);  /* deeper orange for hover / dark contexts */
+/* ─── Web design carousel ─── */
+.web-grid-col {
+  width: min(70vw, 420px);
 }
 
-html {
-  /* Lenis owns smooth scroll — native scroll-behavior: smooth conflicts with it */
-  scroll-behavior: auto;
+.web-carousel .swiper-slide {
+  width: min(70vw, 420px) !important;
 }
 
-body {
-  overflow-x: hidden;
-  font-family: var(--font-jakarta);
+.web-carousel .swiper-slide .slide-inner {
+  opacity: 0.3;
+  transform: scale(0.9);
+  transform-origin: center;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Prevent FOUC for skill items */
-.skill-item {
-  will-change: color;
+.web-carousel .swiper-slide-active .slide-inner {
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* Smooth image rendering */
-img {
-  image-rendering: auto;
-}
+@layer base {
+  :root {
+    --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+      "Helvetica Neue", Arial, sans-serif;
+    --font-siyuan: var(--noto-sc, "Noto Sans SC"), "Source Han Sans SC",
+      "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
 
-/* Orbit button text ring rotation */
-@keyframes orbit-spin {
-  to { transform: rotate(360deg); }
-}
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 
-/* Hide scrollbar — Lenis drives scroll, the native UI is redundant noise */
-html {
-  scrollbar-width: none;          /* Firefox */
-  -ms-overflow-style: none;       /* legacy Edge */
-}
-html::-webkit-scrollbar {
-  display: none;                  /* Chrome / Safari */
+  html,
+  body {
+    height: 100%;
+    background: #000;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
 }
