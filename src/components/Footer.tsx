@@ -113,8 +113,6 @@ export default function Footer() {
           {splineSize && (
             <Spline
               scene="https://prod.spline.design/WsTl7ZN18M7s9PzF/scene.splinecode"
-              width={splineSize.width}
-              height={splineSize.height}
             />
           )}
         </div>
