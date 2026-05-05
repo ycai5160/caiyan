@@ -33,22 +33,12 @@ export default function UxCaseStudy() {
 
       {/* Right: content */}
       <div className="md:flex-1 min-w-0 flex flex-col justify-between relative">
-        {/* Logo — top right, grey (desktop only) */}
-        <div className="absolute top-0 right-0 hidden md:block">
-          <Image
-            src="/logo.svg"
-            alt=""
-            width={65}
-            height={33}
-            className="opacity-30"
-            aria-hidden="true"
-          />
-        </div>
+        
 
         {/* Section label */}
         <div className="flex flex-col gap-0 md:gap-1">
           <p
-            className="font-bold leading-[1] text-[#1e1e1e] text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
+            className="font-bold leading-[1] text-[#0b0b0b] text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
             style={{ fontFamily: "var(--font-sf-pro)" }}
           >
             UX Design
@@ -75,7 +65,7 @@ export default function UxCaseStudy() {
             {metaRows.map((row, i) => (
               <div
                 key={row.label}
-                className={`flex items-start py-2 md:py-2.5 border-b border-[#2a2a2a] ${
+                className={`flex items-start py-2 md:py-2.5 border-b border-[#1e1e1e] ${
                   i === 0 ? "border-t" : ""
                 }`}
               >

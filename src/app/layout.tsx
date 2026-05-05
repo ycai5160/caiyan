@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
+import LenisProvider from "@/components/LenisProvider";
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
@@ -27,7 +28,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <LenisProvider>{children}</LenisProvider>
+      </body>
     </html>
   );
 }

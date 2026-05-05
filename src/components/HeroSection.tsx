@@ -39,10 +39,21 @@ export default function HeroSection() {
       },
     });
 
-    // Headline drifts up and fades over first 60% of hero scroll
+    // Whole section fades out together (video + text as one unit)
+    gsap.to(sectionRef.current, {
+      opacity: 0,
+      ease: "none",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top top",
+        end: `+=${vh * 0.65}`,
+        scrub: true,
+      },
+    });
+
+    // Headline drifts up (no individual fade — section handles it)
     gsap.to(headlineRef.current, {
       y: -80,
-      opacity: 0,
       ease: "none",
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -52,10 +63,9 @@ export default function HeroSection() {
       },
     });
 
-    // Bio fades slightly earlier than headline
+    // Bio drifts up slightly earlier
     gsap.to(bioRef.current, {
       y: -60,
-      opacity: 0,
       ease: "none",
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -85,10 +95,10 @@ export default function HeroSection() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/video/final_comp_1.mp4" type="video/mp4" />
+          <source src="/video/demo.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/100 to-black/30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/100 from-10% to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/100 from-0% to-transparent" />
       </div>
 
       {/* Nav — no parallax, anchored to top of sticky section */}
@@ -105,7 +115,18 @@ export default function HeroSection() {
           <a href="#web" className="hidden md:inline hover:text-white transition-colors duration-200">网页设计</a>
           <a href="#ux" className="hidden md:inline hover:text-white transition-colors duration-200">UX设计</a>
           <span className="hidden md:inline opacity-40">/</span>
-          <a href="/resume" className="hidden md:inline hover:text-white transition-colors duration-200">查看简历 →</a>
+          <a
+            href="/resume"
+            className="group hidden md:inline-flex items-center gap-1.5 px-2 py-2 rounded-full border border-[#3a3a3a] bg-black text-white text-[12px] font-medium overflow-hidden relative transition-colors duration-300"
+            style={{ fontFamily: "var(--font-sf-pro)" }}
+          >
+            <span className="absolute inset-0 bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out rounded-full" />
+            <span className="relative z-10 group-hover:text-black transition-colors duration-300">查看简历</span>
+            <svg className="relative z-10 group-hover:text-black transition-colors duration-300" width="12" height="12" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+              <line x1="1.5" y1="9.5" x2="9.5" y2="1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              <polyline points="5,1.5 9.5,1.5 9.5,6" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
         </div>
         <span className="md:hidden">© 蔡言个人作品集</span>
       </nav>
@@ -116,7 +137,7 @@ export default function HeroSection() {
           className="text-white font-bold leading-[1] tracking-[-0.02em] text-[clamp(40px,8vw,96px)]"
           style={{ fontFamily: "var(--font-sf-pro)" }}
         >
-          From design to live.
+          From design <span className="text-[#f43e0c]">to live.</span>
         </h1>
       </div>
 
@@ -129,7 +150,7 @@ export default function HeroSection() {
           蔡言 · UXUI设计师
         </p>
         <p
-          className="text-[#747474] text-[13px] md:text-[14px] leading-relaxed max-w-[min(318px,100%)]"
+          className="text-[#747474] text-[12px] md:text-[14px] leading-relaxed max-w-[min(420px,100%)]"
           style={{ fontFamily: "var(--font-siyuan)" }}
         >
           我是一名UX/UI设计师，在视觉与交互设计上有扎实积累，同时具备前端开发视角，能与产品、工程团队高效对齐。热衷探索AI在设计流程中的应用，让创意从概念到落地既快又准。

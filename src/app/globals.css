@@ -2,18 +2,18 @@
 
 /* ─── Web design carousel ─── */
 .web-grid-col {
-  width: min(70vw, 420px);
+  width: min(70vw, 540px);
 }
 
 .web-carousel .swiper-slide {
-  width: min(70vw, 420px) !important;
+  width: min(70vw, 540px) !important;
 }
 
 .web-carousel .swiper-slide .slide-inner {
   opacity: 0.3;
-  transform: scale(0.9);
+  transform: scale(0.85);
   transform-origin: center;
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .web-carousel .swiper-slide-active .slide-inner {
@@ -22,24 +22,24 @@
 }
 
 @layer base {
-  :root {
-    --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont,
-      "Helvetica Neue", Arial, sans-serif;
-    --font-siyuan: var(--noto-sc, "Noto Sans SC"), "Source Han Sans SC",
-      "PingFang SC", "Microsoft YaHei", sans-serif;
-  }
+:root {
+  --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-siyuan: var(--noto-sc, "Noto Sans SC"), "Source Han Sans SC",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+}
 
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  html,
-  body {
-    height: 100%;
-    background: #000;
-    color: #fff;
-    -webkit-font-smoothing: antialiased;
-  }
+html,
+body {
+  height: 100%;
+  background: #000;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
 }
