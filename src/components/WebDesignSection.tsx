@@ -14,16 +14,16 @@ gsap.registerPlugin(ScrollTrigger);
 const LABEL = "Web Design";
 
 const projects = [
-  { slug: "sopu",        title: "Solara Processing Unit", subtitle: "", thumbnail: "/thumbnail_sopu.png",       url: "https://designer789.github.io/SoPU/" },
-  { slug: "infolaunch",  title: "Info.Launch",            subtitle: "", thumbnail: "/thumbnail_infolaunch.png", url: "https://www.infolaunch.vip/" },
-  { slug: "privai",      title: "PrivAI",                 subtitle: "", thumbnail: "/thumbnail_privai.png",     url: "https://priv-ai-phi.vercel.app/" },
-  { slug: "lolforge",    title: "lol.Forge",              subtitle: "", thumbnail: "/thumbnail_lolforge.png",   url: "https://lolforge.vercel.app/" },
-  { slug: "ocularai",    title: "OCULARAI",               subtitle: "", thumbnail: "/thumbnail_ocularai.png",   url: "https://ocular-ai.vercel.app/" },
-  { slug: "rankchain",   title: "RankChain",              subtitle: "", thumbnail: "/thumbnail_rankchain.png",  url: "https://rankchainv3.vercel.app/" },
-  { slug: "metai",       title: "Met.AI",                 subtitle: "", thumbnail: "/thumbnail_metai.png",      url: "https://www.metcoin.xyz/" },
-  { slug: "pulse",       title: "Pulse",                  subtitle: "", thumbnail: "/thumbnail_pulse.png",      url: "https://designer789.github.io/Pulse/" },
-  { slug: "sonicai",     title: "Sonic AI",               subtitle: "", thumbnail: "/thumbnail_sonicai.png",    url: "https://designer789.github.io/Sonic-AI/" },
-  { slug: "credhub",     title: "Cred.Hub",               subtitle: "", thumbnail: "/thumbnail_credhub.png",    url: "https://www.credhub.xyz/" },
+  { slug: "sopu",        title: "Solara Processing Unit", subtitle: "", thumbnail: "/thumbnail_sopu.webp",       url: "https://designer789.github.io/SoPU/" },
+  { slug: "infolaunch",  title: "Info.Launch",            subtitle: "", thumbnail: "/thumbnail_infolaunch.webp", url: "https://www.infolaunch.vip/" },
+  { slug: "privai",      title: "PrivAI",                 subtitle: "", thumbnail: "/thumbnail_privai.webp",     url: "https://priv-ai-phi.vercel.app/" },
+  { slug: "lolforge",    title: "lol.Forge",              subtitle: "", thumbnail: "/thumbnail_lolforge.webp",   url: "https://lolforge.vercel.app/" },
+  { slug: "ocularai",    title: "OCULARAI",               subtitle: "", thumbnail: "/thumbnail_ocularai.webp",   url: "https://ocular-ai.vercel.app/" },
+  { slug: "rankchain",   title: "RankChain",              subtitle: "", thumbnail: "/thumbnail_rankchain.webp",  url: "https://rankchainv3.vercel.app/" },
+  { slug: "metai",       title: "Met.AI",                 subtitle: "", thumbnail: "/thumbnail_metai.webp",      url: "https://www.metcoin.xyz/" },
+  { slug: "pulse",       title: "Pulse",                  subtitle: "", thumbnail: "/thumbnail_pulse.webp",      url: "https://designer789.github.io/Pulse/" },
+  { slug: "sonicai",     title: "Sonic AI",               subtitle: "", thumbnail: "/thumbnail_sonicai.webp",    url: "https://designer789.github.io/Sonic-AI/" },
+  { slug: "credhub",     title: "Cred.Hub",               subtitle: "", thumbnail: "/thumbnail_credhub.webp",    url: "https://www.credhub.xyz/" },
 ];
 
 function Crosshair({ className }: { className: string }) {

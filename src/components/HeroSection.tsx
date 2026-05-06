@@ -33,23 +33,25 @@ function scramble(el: HTMLElement, finalText: string, duration: number) {
 }
 
 export default function HeroSection() {
-  const sectionRef   = useRef<HTMLElement>(null);
-  const videoRef     = useRef<HTMLVideoElement>(null);
-  const videoWrapRef = useRef<HTMLDivElement>(null);
-  const headlineRef  = useRef<HTMLDivElement>(null);
-  const bioRef       = useRef<HTMLDivElement>(null);
-  const navRef       = useRef<HTMLElement>(null);
-  const taglineRef   = useRef<HTMLParagraphElement>(null);
-  const bioParaRef   = useRef<HTMLParagraphElement>(null);
-  const headingChars = useRef<HTMLSpanElement[]>([]);
-  const navTexts     = useRef<HTMLElement[]>([]);
+  const sectionRef    = useRef<HTMLElement>(null);
+  const videoRef      = useRef<HTMLVideoElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
+  const videoWrapRef  = useRef<HTMLDivElement>(null);
+  const headlineRef   = useRef<HTMLDivElement>(null);
+  const bioRef        = useRef<HTMLDivElement>(null);
+  const navRef        = useRef<HTMLElement>(null);
+  const taglineRef    = useRef<HTMLParagraphElement>(null);
+  const bioParaRef    = useRef<HTMLParagraphElement>(null);
+  const headingChars  = useRef<HTMLSpanElement[]>([]);
+  const navTexts      = useRef<HTMLElement[]>([]);
 
-  // Video autoplay
+  // Video autoplay — set muted via JS so mobile Safari respects it
   useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.muted = true;
-    v.play().catch(() => {});
+    [videoRef.current, mobileVideoRef.current].forEach((v) => {
+      if (!v) return;
+      v.muted = true;
+      v.play().catch(() => {});
+    });
   }, []);
 
   // Entrance animation — fires on preloader:done (with 4.5s fallback for dev)
@@ -168,7 +170,7 @@ export default function HeroSection() {
         <video
           ref={videoRef}
           autoPlay muted loop playsInline preload="metadata"
-          poster="/video/fallback_img.png"
+          poster="/video/fallback_img.jpg"
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="/video/demo2.mp4" type="video/mp4" />
@@ -242,6 +244,8 @@ export default function HeroSection() {
               </span>
             </span>
           ))}
+          {/* mobile-only line break after "design" */}
+          <br className="md:hidden" aria-hidden="true" />
           {/* "to live." — accent colour */}
           {[..."to live."].map((char, i) => (
             <span
@@ -306,8 +310,8 @@ export default function HeroSection() {
             </div>
           ))}
           <div className="aspect-video w-full overflow-hidden">
-            <video autoPlay muted loop playsInline preload="metadata" poster="/video/fallback_img.png" className="w-full h-full object-cover">
-              <source src="/video/demo.mp4" type="video/mp4" />
+            <video ref={mobileVideoRef} autoPlay muted loop playsInline preload="metadata" poster="/video/fallback_img.jpg" className="w-full h-full object-cover">
+              <source src="/video/demo2.mp4" type="video/mp4" />
             </video>
           </div>
         </div>

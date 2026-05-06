@@ -73,10 +73,13 @@ export default function UxCaseStudy() {
         ref={imageRef}
         className="aspect-[4/3] w-full md:aspect-auto md:flex-1 md:h-auto min-w-0 overflow-hidden relative"
       >
-        <img
+        <Image
+          src="/ux_case.webp"
           alt="Subtle — UX case study"
-          className="absolute inset-0 w-full h-full object-cover"
-          src="/ux_case.png"
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          priority
         />
       </div>
 
