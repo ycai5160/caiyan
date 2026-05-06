@@ -14,21 +14,36 @@ interface StaggerLinkProps {
   rel?: string;
 }
 
+const wrapperStyle = (extra?: React.CSSProperties): React.CSSProperties => ({
+  position: "relative",
+  display: "inline-block",
+  overflow: "hidden",
+  ...extra,
+});
+
+const dupStyle: React.CSSProperties = {
+  position: "absolute",
+  top: "100%",
+  left: 0,
+  display: "block",
+};
+
 export default function StaggerLink({
   children,
-  as: Tag = "span",
+  as = "span",
   href,
   className = "",
   style,
   target,
   rel,
 }: StaggerLinkProps) {
-  const wrapperRef = useRef<HTMLAnchorElement & HTMLSpanElement>(null);
+  const aRef      = useRef<HTMLAnchorElement>(null);
+  const spanRef   = useRef<HTMLSpanElement>(null);
   const primaryRef = useRef<HTMLSpanElement>(null);
   const dupRef     = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
-    const wrapper = wrapperRef.current;
+    const wrapper = (aRef.current ?? spanRef.current) as HTMLElement | null;
     const primary = primaryRef.current;
     const dup     = dupRef.current;
     if (!wrapper || !primary || !dup) return;
@@ -44,11 +59,7 @@ export default function StaggerLink({
     split();
 
     const onEnter = () => {
-      const all = [
-        ...(stPrimary.chars ?? []),
-        ...(stDup.chars ?? []),
-      ];
-      gsap.to(all, {
+      gsap.to([...(stPrimary.chars ?? []), ...(stDup.chars ?? [])], {
         yPercent: -100,
         duration: 0.5,
         ease: "power4.inOut",
@@ -58,11 +69,7 @@ export default function StaggerLink({
     };
 
     const onLeave = () => {
-      const all = [
-        ...(stPrimary.chars ?? []),
-        ...(stDup.chars ?? []),
-      ];
-      gsap.to(all, {
+      gsap.to([...(stPrimary.chars ?? []), ...(stDup.chars ?? [])], {
         yPercent: 0,
         duration: 0.4,
         ease: "power4.inOut",
@@ -94,30 +101,31 @@ export default function StaggerLink({
     };
   }, []);
 
-  const props = {
-    ref: wrapperRef,
-    className,
-    style: {
-      position: "relative" as const,
-      display: "inline-block",
-      overflow: "hidden",
-      ...style,
-    },
-    ...(Tag === "a" && { href, target, rel }),
-  };
+  const inner = (
+    <>
+      <span ref={primaryRef} style={{ display: "block" }}>{children}</span>
+      <span ref={dupRef} aria-hidden="true" style={dupStyle}>{children}</span>
+    </>
+  );
+
+  if (as === "a") {
+    return (
+      <a
+        ref={aRef}
+        href={href}
+        target={target}
+        rel={rel}
+        className={className}
+        style={wrapperStyle(style)}
+      >
+        {inner}
+      </a>
+    );
+  }
 
   return (
-    <Tag {...(props as never)}>
-      <span ref={primaryRef} style={{ display: "block" }}>
-        {children}
-      </span>
-      <span
-        ref={dupRef}
-        aria-hidden="true"
-        style={{ position: "absolute", top: "100%", left: 0, display: "block" }}
-      >
-        {children}
-      </span>
-    </Tag>
+    <span ref={spanRef} className={className} style={wrapperStyle(style)}>
+      {inner}
+    </span>
   );
 }
