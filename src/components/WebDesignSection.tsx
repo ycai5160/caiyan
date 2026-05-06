@@ -1,9 +1,17 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const LABEL = "Web Design";
 
 const projects = [
   { slug: "sopu",        title: "Solara Processing Unit", subtitle: "", thumbnail: "/thumbnail_sopu.png",       url: "https://designer789.github.io/SoPU/" },
@@ -31,26 +39,58 @@ function Crosshair({ className }: { className: string }) {
 
 export default function WebDesignSection() {
   const [realIndex, setRealIndex] = useState(0);
-  const swiperRef = useRef<SwiperClass | null>(null);
-  const active = projects[realIndex % projects.length];
+  const swiperRef   = useRef<SwiperClass | null>(null);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const labelChars  = useRef<HTMLSpanElement[]>([]);
+  const accentRef   = useRef<HTMLParagraphElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
+  const active      = projects[realIndex % projects.length];
+
+  useGSAP(() => {
+    if (!sectionRef.current) return;
+
+    const chars = labelChars.current;
+    gsap.set(chars, { y: "115%" });
+    gsap.set([accentRef.current, carouselRef.current, controlsRef.current], { y: 20, opacity: 0 });
+
+    gsap.timeline({
+      scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
+    })
+      .to(chars, { y: 0, stagger: 0.04, duration: 0.7, ease: "power3.out" }, 0)
+      .to(accentRef.current, { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" }, 0.1)
+      .to(carouselRef.current, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 0.2)
+      .to(controlsRef.current, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, 0.3);
+  }, { scope: sectionRef });
+
+  labelChars.current = [];
 
   return (
     <section
+      ref={sectionRef}
       id="web"
-      className="relative w-full flex flex-col gap-4 md:gap-6 py-16 md:py-32 bg-black"
+      className="relative w-full flex flex-col py-16 md:py-32 bg-bg"
     >
       {/* Section label */}
-      <div
-        className="flex flex-col gap-0 md:gap-1 px-6 md:px-10 lg:px-16 mb-10"
-      >
+      <div className="flex flex-col gap-1 px-6 md:px-10 lg:px-16 pb-12 md:pb-16">
         <p
-          className="font-bold leading-[1] text-[#0b0b0b] text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
+          className="font-bold leading-[1] text-surface text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
           style={{ fontFamily: "var(--font-sf-pro)" }}
         >
-          Web Design
+          {[...LABEL].map((char, i) => (
+            <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom" }}>
+              <span
+                ref={(el) => { if (el) labelChars.current.push(el); }}
+                style={{ display: "inline-block" }}
+              >
+                {char === " " ? " " : char}
+              </span>
+            </span>
+          ))}
         </p>
         <p
-          className="font-bold leading-5 text-[#f43e0c] text-[13px] md:text-[16px] tracking-[0.3rem]"
+          ref={accentRef}
+          className="font-bold leading-5 text-accent text-[13px] md:text-[16px] tracking-[0.3rem]"
           style={{ fontFamily: "var(--font-siyuan)" }}
         >
           网页设计项目
@@ -58,11 +98,11 @@ export default function WebDesignSection() {
       </div>
 
       {/* Carousel + static blueprint grid */}
-      <div className="relative border-t border-b border-[#1e1e1e]">
+      <div ref={carouselRef} className="relative border-t border-b border-edge">
 
         {/* Blueprint grid — static, sits above carousel */}
         <div className="absolute inset-0 pointer-events-none z-10 flex items-stretch justify-center">
-          <div className="relative web-grid-col border-l border-r border-[rgba(255,255,255,0.1)]">
+          <div className="relative web-grid-col border-l border-r border-fg/10">
             <Crosshair className="-top-1.5 -left-1.5" />
             <Crosshair className="-top-1.5 -right-1.5" />
             <Crosshair className="-bottom-1.5 -left-1.5" />
@@ -70,7 +110,7 @@ export default function WebDesignSection() {
           </div>
         </div>
 
-       
+
         <Swiper
           centeredSlides
           slidesPerView="auto"
@@ -89,17 +129,22 @@ export default function WebDesignSection() {
                   <div className="aspect-[3/4] relative overflow-hidden">
                     {isActive ? (
                       <a href={p.url} target="_blank" rel="noopener noreferrer">
-                        <img
+                        <Image
                           src={p.thumbnail}
                           alt={p.title}
-                          className="absolute inset-0 w-full h-full object-cover cursor-pointer"
+                          fill
+                          className="object-cover"
+                          sizes="min(70vw, 540px)"
+                          priority={i === 0}
                         />
                       </a>
                     ) : (
-                      <img
+                      <Image
                         src={p.thumbnail}
                         alt={p.title}
-                        className="absolute inset-0 w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        sizes="min(70vw, 540px)"
                       />
                     )}
                   </div>
@@ -111,30 +156,30 @@ export default function WebDesignSection() {
       </div>
 
       {/* Nav left | Label center | Nav right */}
-      <div className="grid grid-cols-3 items-center px-6 md:px-10 lg:px-16">
+      <div ref={controlsRef} className="grid grid-cols-[1fr_2fr_1fr] items-center px-6 md:px-10 lg:px-16 pt-5 md:pt-6">
         <button
           onClick={() => swiperRef.current?.slidePrev()}
           aria-label="Previous project"
-          className="flex items-center gap-2 px-2 py-1 rounded-full border border-[#1e1e1e] text-[#747474] text-[18px] hover:border-[#555] hover:text-white transition-colors duration-200 justify-self-start"
+          className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-start"
           style={{ fontFamily: "var(--font-sf-pro)" }}
         >
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-            <line x1="9.5" y1="9.5" x2="1.5" y2="1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-            <polyline points="6,1.5 1.5,1.5 1.5,6" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true" style={{ transform: "rotate(180deg)" }}>
+            <path d="M17 7 7 17" strokeWidth="2" />
+            <path d="m8 7 9 0 0 9" strokeWidth="2" />
           </svg>
           previous
         </button>
 
         <div className="flex flex-col gap-1 items-center text-center">
           <p
-            className="text-white text-[14px] tracking-[-0.28px]"
+            className="text-fg text-[15px] font-medium tracking-[-0.28px]"
             style={{ fontFamily: "var(--font-sf-pro)" }}
           >
             {active.title}
           </p>
           {active.subtitle && (
             <p
-              className="text-[#747474] text-[14px] tracking-[-0.28px]"
+              className="text-muted text-[14px] tracking-[-0.28px]"
               style={{ fontFamily: "var(--font-siyuan)" }}
             >
               {active.subtitle}
@@ -145,13 +190,13 @@ export default function WebDesignSection() {
         <button
           onClick={() => swiperRef.current?.slideNext()}
           aria-label="Next project"
-          className="flex items-center gap-2 px-2 py-1 rounded-full border border-[#1e1e1e] text-[#747474] text-[18px] hover:border-[#555] hover:text-white transition-colors duration-200 justify-self-end"
+          className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-end"
           style={{ fontFamily: "var(--font-sf-pro)" }}
         >
           next
-          <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
-            <line x1="1.5" y1="9.5" x2="9.5" y2="1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-            <polyline points="5,1.5 9.5,1.5 9.5,6" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true">
+            <path d="M17 7 7 17" strokeWidth="2" />
+            <path d="m8 7 9 0 0 9" strokeWidth="2" />
           </svg>
         </button>
       </div>

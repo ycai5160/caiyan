@@ -1,86 +1,141 @@
-import Image from "next/image";
+"use client";
 
-const imgUxCaseImage1 =
-  "https://www.figma.com/api/mcp/asset/411ac46a-b8ff-4dd9-92bc-90812ff57fd9";
+import Image from "next/image";
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const metaRows = [
   { label: "Keywords", value: "视频剪辑 · 内容创作 · AI 工具", flex: false },
-  { label: "Role", value: "用户研究 · 产品设计", flex: false },
-  { label: "Scope", value: "端到端 · 面向消费者", flex: false },
-  { label: "Year", value: "2026", flex: false },
+  { label: "Role",     value: "用户研究 · 产品设计",            flex: false },
+  { label: "Scope",    value: "端到端 · 面向消费者",            flex: false },
+  { label: "Year",     value: "2026",                          flex: false },
   {
     label: "Overview",
-    value:
-      `AI 转写工具普遍止步于"生成"，校对与样式统一仍需大量人工介入。通过用户访谈与工作流分析，识别核心痛点，围绕文本—时间轴联动编辑、模型置信度可视化、术语库与预设复用展开设计，覆盖从转写生成到多格式导出的完整链路。`,
+    value: `AI 转写工具普遍止步于"生成"，校对与样式统一仍需大量人工介入。通过用户访谈与工作流分析，识别核心痛点，围绕文本—时间轴联动编辑、模型置信度可视化、术语库与预设复用展开设计，覆盖从转写生成到多格式导出的完整链路。`,
     flex: true,
   },
 ];
 
+const LABEL = "UX Design";
+
 export default function UxCaseStudy() {
+  const sectionRef     = useRef<HTMLElement>(null);
+  const imageRef       = useRef<HTMLDivElement>(null);
+  const accentRef      = useRef<HTMLParagraphElement>(null);
+  const projectTitleRef = useRef<HTMLParagraphElement>(null);
+  const metaRowsRef    = useRef<HTMLDivElement[]>([]);
+  const labelChars     = useRef<HTMLSpanElement[]>([]);
+
+  useGSAP(() => {
+    if (!sectionRef.current) return;
+
+    const chars = labelChars.current;
+    const rows  = metaRowsRef.current;
+
+    gsap.set(chars,  { y: "115%" });
+    gsap.set([accentRef.current, projectTitleRef.current], { y: 24, opacity: 0 });
+    gsap.set(rows,   { y: 20, opacity: 0 });
+    // clipPath wipe: no layout reflow, GPU-composited, reveals top→bottom
+    gsap.set(imageRef.current, { clipPath: "inset(0 0 100% 0)" });
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        once: true,
+      },
+    });
+
+    tl
+      .to(imageRef.current, { clipPath: "inset(0 0 0% 0)", duration: 1.2, ease: "power3.inOut" }, 0)
+      .to(chars, { y: 0, stagger: 0.04, duration: 0.7, ease: "power3.out" }, 0)
+      .to([accentRef.current, projectTitleRef.current], {
+        y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: "power2.out",
+      }, 0.15)
+      .to(rows, { y: 0, opacity: 1, stagger: 0.07, duration: 0.6, ease: "power2.out" }, 0.3);
+  }, { scope: sectionRef });
+
+  labelChars.current  = [];
+  metaRowsRef.current = [];
+
   return (
     <section
+      ref={sectionRef}
       id="ux"
-      className="relative w-full flex flex-col md:flex-row md:h-screen md:min-h-[600px] gap-6 md:gap-12 lg:gap-16 p-6 md:p-10 lg:p-16 bg-black"
+      className="relative w-full flex flex-col md:flex-row md:h-screen md:min-h-[600px] gap-10 md:gap-12 lg:gap-16 px-6 py-10 md:p-16 lg:py-20 bg-bg"
     >
       {/* Left: image */}
-      <div className="aspect-[4/3] w-full md:aspect-auto md:flex-1 md:h-auto min-w-0 overflow-hidden relative">
+      <div
+        ref={imageRef}
+        className="aspect-[4/3] w-full md:aspect-auto md:flex-1 md:h-auto min-w-0 overflow-hidden relative"
+      >
         <img
           alt="Subtle — UX case study"
           className="absolute inset-0 w-full h-full object-cover"
-          src={imgUxCaseImage1}
+          src="/ux_case.png"
         />
       </div>
 
       {/* Right: content */}
       <div className="md:flex-1 min-w-0 flex flex-col justify-between relative">
-        
 
         {/* Section label */}
-        <div className="flex flex-col gap-0 md:gap-1">
+        <div className="flex flex-col gap-1">
           <p
-            className="font-bold leading-[1] text-[#0b0b0b] text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
+            className="font-bold leading-[1] text-surface text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
             style={{ fontFamily: "var(--font-sf-pro)" }}
           >
-            UX Design
+            {[...LABEL].map((char, i) => (
+              <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom" }}>
+                <span
+                  ref={(el) => { if (el) labelChars.current.push(el); }}
+                  style={{ display: "inline-block" }}
+                >
+                  {char === " " ? " " : char}
+                </span>
+              </span>
+            ))}
           </p>
           <p
-            className="font-bold leading-5 text-[#f43e0c] text-[13px] md:text-[16px] tracking-[0.3rem]"
+            ref={accentRef}
+            className="font-bold leading-5 text-accent text-[13px] md:text-[16px] tracking-[0.3rem]"
             style={{ fontFamily: "var(--font-siyuan)" }}
           >
             个人端对端 UX 设计项目
           </p>
         </div>
 
-        {/* Project detail — mt-8 separates from label on mobile; justify-between handles desktop */}
+        {/* Project detail */}
         <div className="flex flex-col gap-5 md:gap-6 mt-8 md:mt-0">
           <p
-            className="font-bold text-[clamp(20px,3.5vw,40px)] text-white tracking-[-0.8px] leading-tight"
+            ref={projectTitleRef}
+            className="font-bold text-[clamp(20px,3.5vw,40px)] text-fg tracking-[-0.8px] leading-tight"
             style={{ fontFamily: "var(--font-sf-pro)" }}
           >
             Subtle／视频字幕转写与编辑平台
           </p>
 
-          {/* Metadata rows */}
           <div className="flex flex-col">
             {metaRows.map((row, i) => (
               <div
                 key={row.label}
-                className={`flex items-start py-2 md:py-2.5 border-b border-[#1e1e1e] ${
-                  i === 0 ? "border-t" : ""
-                }`}
+                ref={(el) => { if (el) metaRowsRef.current.push(el); }}
+                className={`flex items-start py-2.5 md:py-3 border-b border-edge ${i === 0 ? "border-t" : ""}`}
               >
                 <div className="shrink-0 w-24 md:w-32 lg:w-40">
                   <span
-                    className="text-[#747474] text-[12px] md:text-[14px] tracking-[-0.32px]"
+                    className="text-muted text-[12px] md:text-[14px] tracking-[-0.32px]"
                     style={{ fontFamily: "var(--font-sf-pro)" }}
                   >
                     {row.label}
                   </span>
                 </div>
                 <span
-                  className={`text-white text-[12px] md:text-[13px] lg:text-[14px] tracking-[-0.28px] leading-relaxed ${
-                    row.flex ? "flex-1 min-w-0" : ""
-                  }`}
+                  className={`text-fg text-[12px] md:text-[13px] lg:text-[14px] tracking-[-0.28px] leading-relaxed ${row.flex ? "flex-1 min-w-0" : ""}`}
                   style={{ fontFamily: "var(--font-siyuan)" }}
                 >
                   {row.value}

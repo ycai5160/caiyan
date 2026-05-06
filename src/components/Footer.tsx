@@ -2,6 +2,11 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Spline = dynamic(() => import("@splinetool/react-spline"), { ssr: false });
 
@@ -12,30 +17,49 @@ const navLinks = [
 ];
 
 export default function Footer() {
+  const footerRef    = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [splineSize, setSplineSize] = useState<{ width: number; height: number } | null>(null);
+  const navItemsRef  = useRef<HTMLAnchorElement[]>([]);
+  const metaRef      = useRef<HTMLDivElement>(null);
+  const bigTextRef   = useRef<HTMLParagraphElement>(null);
+  const [splineReady, setSplineReady] = useState(false);
+
+  useGSAP(() => {
+    if (!footerRef.current) return;
+
+    gsap.set(navItemsRef.current, { x: -16, opacity: 0 });
+    gsap.set([metaRef.current, bigTextRef.current], { y: 20, opacity: 0 });
+
+    gsap.timeline({
+      scrollTrigger: { trigger: footerRef.current, start: "top 90%", once: true },
+    })
+      .to(navItemsRef.current, { x: 0, opacity: 1, stagger: 0.08, duration: 0.6, ease: "power2.out" }, 0)
+      .to(metaRef.current,     { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" }, 0.1)
+      .to(bigTextRef.current,  { y: 0, opacity: 1, duration: 1.0, ease: "power3.out" }, 0.2);
+  }, { scope: footerRef });
+
+  navItemsRef.current = [];
 
   useEffect(() => {
-    const init = () => {
-      if (containerRef.current) {
-        setSplineSize({
-          width: containerRef.current.offsetWidth,
-          height: containerRef.current.offsetHeight,
-        });
-      }
-    };
+    const el = containerRef.current;
+    if (!el) return;
 
-    if (document.readyState === "complete") {
-      init();
-    } else {
-      window.addEventListener("load", init, { once: true });
-    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSplineReady(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
- 
-
   return (
-    <footer className="relative w-full overflow-hidden bg-black" style={{ height: "clamp(360px, 80vw, 585px)" }}>
+    <footer ref={footerRef} className="relative w-full overflow-hidden bg-bg" style={{ height: "clamp(360px, 80vw, 585px)" }}>
 
       {/* Aurora gradient — exact radial from Figma, blurred for softness */}
       <svg
@@ -79,38 +103,52 @@ export default function Footer() {
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col pt-14 px-6 md:pt-16 md:px-10 lg:px-16">
 
-        {/* Top bar: nav | copyright | contact */}
+        {/* Top bar: mobile=2col (nav|contact+copyright), desktop=3col */}
         <div
-          className="flex items-start justify-between w-full text-[#c3c3c3] text-[13px] md:text-[14px] leading-5"
+          className="flex items-start justify-between w-full text-secondary text-[13px] md:text-[14px] leading-5"
           style={{ fontFamily: "var(--font-siyuan)" }}
         >
-          <div className="flex flex-col gap-0.5">
+          {/* Nav links — 44px touch targets on mobile */}
+          <nav className="flex flex-col" aria-label="Footer navigation">
             {navLinks.map((l) => (
-              <a key={l.label} href={l.href} className="hover:text-white transition-colors duration-200">
+              <a
+                key={l.label}
+                ref={(el) => { if (el) navItemsRef.current.push(el); }}
+                href={l.href}
+                className="flex items-center gap-1 min-h-[44px] md:min-h-0 md:leading-5 hover:text-fg transition-colors duration-200"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true"><path d="M6 6v6a3 3 0 0 0 3 3h10l-4-4m0 8 4-4" strokeWidth="2" /></svg>
                 {l.label}
               </a>
             ))}
-          </div>
+          </nav>
 
-          <div className="flex flex-col gap-0.5 items-center text-center">
+          {/* Copyright center — desktop only */}
+          <div ref={metaRef} className="hidden md:flex flex-col gap-0.5 items-center text-center">
             <p>© 2026 蔡言个人作品集</p>
-            <p style={{ fontFamily: "var(--font-sf-pro)" }}>Design, Motion, Coding</p>
+            <p style={{ fontFamily: "var(--font-sf-pro)" }}>From design to live.</p>
           </div>
 
-          <div className="flex flex-col gap-0.5 items-end">
+          {/* Contact — on mobile also carries copyright */}
+          <div className="flex flex-col items-end gap-0.5">
             <a
               href="mailto:caiyan615@gmail.com"
-              className="hover:text-white transition-colors duration-200"
+              className="flex items-center min-h-[44px] md:min-h-0 hover:text-fg transition-colors duration-200"
               style={{ fontFamily: "var(--font-sf-pro)" }}
             >
               caiyan615@gmail.com
             </a>
+            
+            <div className="flex flex-col items-end gap-0.5 md:hidden mt-0.5">
+              <p>© 2026 蔡言个人作品集</p>
+              <p style={{ fontFamily: "var(--font-sf-pro)" }}>From design to live.</p>
+            </div>
           </div>
         </div>
 
-        {/* Spline 3D — mounted only after all page resources are ready */}
+        {/* Spline 3D */}
         <div ref={containerRef} className="flex h-full inset-0 z-10">
-          {splineSize && (
+          {splineReady && (
             <Spline
               scene="https://prod.spline.design/WsTl7ZN18M7s9PzF/scene.splinecode"
             />
@@ -120,7 +158,8 @@ export default function Footer() {
         {/* Large "CAI YAN" — anchored to bottom, partially clipped for depth */}
         <div className="absolute bottom-0 inset-x-0 flex justify-center pointer-events-none select-none translate-y-[14%]">
           <p
-            className="text-white mix-blend-overlay opacity-50 whitespace-nowrap font-medium"
+            ref={bigTextRef}
+            className="text-fg mix-blend-overlay opacity-50 whitespace-nowrap font-medium"
             style={{
               fontFamily: "var(--font-sf-pro)",
               fontSize: "clamp(100px, 17vw, 256px)",

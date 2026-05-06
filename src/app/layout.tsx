@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Noto_Sans_SC } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
+import CustomCursor from "@/components/CustomCursor";
+import Preloader from "@/components/Preloader";
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
@@ -23,12 +25,11 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className={notoSansSC.variable}>
       <head>
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
+        <link rel="preconnect" href="https://prod.spline.design" />
       </head>
       <body>
+        <Preloader />
+        <CustomCursor />
         <LenisProvider>{children}</LenisProvider>
       </body>
     </html>

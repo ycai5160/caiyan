@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+@theme {
+  /* ── Semantic color tokens ────────────────────────────────── */
+  --color-bg:           #000000;   /* page background              */
+  --color-fg:           #ffffff;   /* primary text / foreground    */
+  --color-accent:       #f43e0c;   /* brand orange                 */
+  --color-surface:      #141414;   /* ghost / watermark text       */
+  --color-secondary:    #c3c3c3;   /* nav, footer text             */
+  --color-muted:        #747474;   /* meta labels, body copy       */
+  --color-edge:         #1e1e1e;   /* subtle divider borders       */
+  --color-edge-md:      #2a2a2a;   /* medium borders (pills)       */
+  --color-edge-lg:      #3a3a3a;   /* strong borders (buttons)     */
+  --color-edge-hover:   #555555;   /* border hover state           */
+}
+
+/* ── Non-color design tokens ──────────────────────────────── */
+:root {
+  --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-siyuan: var(--noto-sc, "Noto Sans SC"), "Source Han Sans SC",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  --color-cursor: var(--color-fg);
+}
+
 /* ─── Web design carousel ─── */
 .web-grid-col {
   width: min(70vw, 540px);
@@ -22,24 +46,18 @@
 }
 
 @layer base {
-:root {
-  --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont,
-    "Helvetica Neue", Arial, sans-serif;
-  --font-siyuan: var(--noto-sc, "Noto Sans SC"), "Source Han Sans SC",
-    "PingFang SC", "Microsoft YaHei", sans-serif;
-}
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: none !important;
+  }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html,
-body {
-  height: 100%;
-  background: #000;
-  color: #fff;
-  -webkit-font-smoothing: antialiased;
-}
+  html,
+  body {
+    height: 100%;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    -webkit-font-smoothing: antialiased;
+  }
 }

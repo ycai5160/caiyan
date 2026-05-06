@@ -10,6 +10,7 @@ export default function Home() {
       <HeroSection />
       <UxCaseStudy />
       <WebDesignSection />
+      <SkillSection />
       <Footer />
     </main>
   );
