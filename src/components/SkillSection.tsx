@@ -9,7 +9,7 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger);
 
 const skills = [
-  { heading: "Discover", tags: ["User research", "Insight", "Strategy"] },
+  { heading: "Discover", tags: ["User research", "Usability Testing", "Journey Mapping"] },
   { heading: "Design",   tags: ["Figma", "Webflow", "After Effects", "Illustrator", "Protopie"] },
   { heading: "Develop",  tags: ["Claude Code", "Cursor", "HTML&CSS", "Next.js"] },
 ];

@@ -227,7 +227,7 @@ export default function HeroSection() {
       {/* Headline */}
       <div ref={headlineRef} className="relative z-10 px-6 pb-4 md:px-10 md:pb-0 lg:px-16">
         <h1
-          className="font-bold leading-[1.2] tracking-[-0.02em] text-[clamp(48px,10vw,96px)]"
+          className="font-bold leading-[1.1] tracking-[-0.02em] text-[clamp(48px,10vw,96px)]"
           style={{ fontFamily: "var(--font-sf-pro)" }}
         >
           {/* "From design " — each letter clipped and animated */}

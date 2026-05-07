@@ -157,50 +157,97 @@ export default function WebDesignSection() {
         </Swiper>
       </div>
 
-      {/* Nav left | Label center | Nav right */}
-      <div ref={controlsRef} className="grid grid-cols-[1fr_2fr_1fr] items-center px-6 md:px-10 lg:px-16 pt-5 md:pt-6">
-        <button
-          onClick={() => swiperRef.current?.slidePrev()}
-          aria-label="Previous project"
-          className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-start"
-          style={{ fontFamily: "var(--font-sf-pro)" }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true" style={{ transform: "rotate(180deg)" }}>
-            <path d="M17 7 7 17" strokeWidth="2" />
-            <path d="m8 7 9 0 0 9" strokeWidth="2" />
-          </svg>
-          previous
-        </button>
+      {/* Controls */}
+      <div ref={controlsRef} className="px-6 md:px-10 lg:px-16 pt-5 md:pt-6">
 
-        <div className="flex flex-col gap-1 items-center text-center">
-          <p
-            className="text-fg text-[15px] font-medium tracking-[-0.28px]"
-            style={{ fontFamily: "var(--font-sf-pro)" }}
-          >
-            {active.title}
-          </p>
-          {active.subtitle && (
+        {/* Mobile: title+subtitle left, icon arrows right */}
+        <div className="flex items-start justify-between gap-4 md:hidden">
+          <div className="flex flex-col gap-1 flex-1 min-w-0">
             <p
-              className="text-muted text-[14px] tracking-[-0.28px]"
-              style={{ fontFamily: "var(--font-siyuan)" }}
+              className="text-fg text-[14px] font-medium tracking-[-0.02em] leading-tight"
+              style={{ fontFamily: "var(--font-sf-pro)" }}
             >
-              {active.subtitle}
+              {active.title}
             </p>
-          )}
+            {active.subtitle && (
+              <p
+                className="text-muted text-[12px] leading-snug line-clamp-2"
+                style={{ fontFamily: "var(--font-siyuan)" }}
+              >
+                {active.subtitle}
+              </p>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0 pt-0.5">
+            <button
+              onClick={() => swiperRef.current?.slidePrev()}
+              aria-label="Previous project"
+              className="w-8 h-8 flex items-center justify-center border border-edge text-muted hover:border-edge-hover hover:text-fg transition-colors duration-200"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true" style={{ transform: "rotate(180deg)" }}>
+                <path d="M17 7 7 17" strokeWidth="2" />
+                <path d="m8 7 9 0 0 9" strokeWidth="2" />
+              </svg>
+            </button>
+            <button
+              onClick={() => swiperRef.current?.slideNext()}
+              aria-label="Next project"
+              className="w-8 h-8 flex items-center justify-center border border-edge text-muted hover:border-edge-hover hover:text-fg transition-colors duration-200"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true">
+                <path d="M17 7 7 17" strokeWidth="2" />
+                <path d="m8 7 9 0 0 9" strokeWidth="2" />
+              </svg>
+            </button>
+          </div>
         </div>
 
-        <button
-          onClick={() => swiperRef.current?.slideNext()}
-          aria-label="Next project"
-          className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-end"
-          style={{ fontFamily: "var(--font-sf-pro)" }}
-        >
-          next
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true">
-            <path d="M17 7 7 17" strokeWidth="2" />
-            <path d="m8 7 9 0 0 9" strokeWidth="2" />
-          </svg>
-        </button>
+        {/* Desktop: prev | title+subtitle | next */}
+        <div className="hidden md:grid grid-cols-[1fr_2fr_1fr] items-center">
+          <button
+            onClick={() => swiperRef.current?.slidePrev()}
+            aria-label="Previous project"
+            className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-start"
+            style={{ fontFamily: "var(--font-sf-pro)" }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true" style={{ transform: "rotate(180deg)" }}>
+              <path d="M17 7 7 17" strokeWidth="2" />
+              <path d="m8 7 9 0 0 9" strokeWidth="2" />
+            </svg>
+            previous
+          </button>
+
+          <div className="flex flex-col gap-1 items-center text-center">
+            <p
+              className="text-fg text-[15px] font-medium tracking-[-0.28px]"
+              style={{ fontFamily: "var(--font-sf-pro)" }}
+            >
+              {active.title}
+            </p>
+            {active.subtitle && (
+              <p
+                className="text-muted text-[14px] tracking-[-0.28px]"
+                style={{ fontFamily: "var(--font-siyuan)" }}
+              >
+                {active.subtitle}
+              </p>
+            )}
+          </div>
+
+          <button
+            onClick={() => swiperRef.current?.slideNext()}
+            aria-label="Next project"
+            className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-end"
+            style={{ fontFamily: "var(--font-sf-pro)" }}
+          >
+            next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true">
+              <path d="M17 7 7 17" strokeWidth="2" />
+              <path d="m8 7 9 0 0 9" strokeWidth="2" />
+            </svg>
+          </button>
+        </div>
+
       </div>
     </section>
   );

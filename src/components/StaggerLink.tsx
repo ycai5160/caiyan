@@ -77,17 +77,27 @@ const StaggerLink = forwardRef<StaggerLinkHandle, StaggerLinkProps>(function Sta
         yPercent: -100,
         duration: 0.5,
         ease: "power4.inOut",
-        stagger: { each: 0.03, from: "start" },
+        stagger: { each: 0.01, from: "start" },
         overwrite: true,
       });
     };
 
     const onLeave = () => {
-      gsap.to([...(stPrimary.chars ?? []), ...(stDup.chars ?? [])], {
+      // Dup exits downward fast — clears the visible zone before primary arrives
+      gsap.to(stDup.chars ?? [], {
         yPercent: 0,
-        duration: 0.4,
-        ease: "power4.inOut",
-        stagger: { each: 0.03, from: "random" },
+        duration: 0.25,
+        ease: "power4.out",
+        stagger: { each: 0.01, from: "start" },
+        overwrite: true,
+      });
+      // Primary slides back in from above once dup has mostly cleared
+      gsap.to(stPrimary.chars ?? [], {
+        yPercent: 0,
+        duration: 0.45,
+        ease: "power3.out",
+        stagger: { each: 0.02, from: "start" },
+        delay: 0.08,
         overwrite: true,
       });
     };
