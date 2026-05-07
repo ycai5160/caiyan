@@ -178,7 +178,7 @@ export default function WebDesignSection() {
               </p>
             )}
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0 pt-0.5">
+          <div className="hidden">
             <button
               onClick={() => swiperRef.current?.slidePrev()}
               aria-label="Previous project"
