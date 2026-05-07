@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { gsap } from "gsap";
-import StaggerLink from "./StaggerLink";
+import StaggerLink, { type StaggerLinkHandle } from "./StaggerLink";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
@@ -20,7 +20,8 @@ export default function SkillSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const labelChars = useRef<HTMLSpanElement[]>([]);
   const accentRef  = useRef<HTMLParagraphElement>(null);
-  const rowsRef    = useRef<HTMLDivElement[]>([]);
+  const rowsRef      = useRef<HTMLDivElement[]>([]);
+  const staggerRefs  = useRef<(StaggerLinkHandle | null)[]>([]);
 
   useGSAP(() => {
     if (!sectionRef.current) return;
@@ -44,8 +45,9 @@ export default function SkillSection() {
       .to(rows, { y: 0, opacity: 1, stagger: 0.1, duration: 0.7, ease: "power2.out" }, 0.2);
   }, { scope: sectionRef });
 
-  labelChars.current = [];
-  rowsRef.current    = [];
+  labelChars.current   = [];
+  rowsRef.current      = [];
+  staggerRefs.current  = [];
 
   return (
     <section
@@ -57,11 +59,13 @@ export default function SkillSection() {
 
       {/* Rows */}
       <div className="px-6 md:px-10 lg:px-16">
-        {skills.map((skill) => (
+        {skills.map((skill, i) => (
           <div
             key={skill.heading}
             ref={(el) => { if (el) rowsRef.current.push(el); }}
             className="group relative flex flex-col gap-3 py-4 md:flex-row md:items-end md:justify-between md:py-3"
+            onMouseEnter={() => staggerRefs.current[i]?.enter()}
+            onMouseLeave={() => staggerRefs.current[i]?.leave()}
           >
             {/* base divider */}
             <span className="absolute bottom-0 left-0 w-full h-px bg-edge" aria-hidden="true" />
@@ -73,10 +77,14 @@ export default function SkillSection() {
             />
 
             <p
-              className="font-bold leading-[1.1] text-muted tracking-[-0.02em] text-[clamp(52px,8vw,96px)]"
+              className="font-bold leading-[1.1] text-muted group-hover:text-white tracking-[-0.02em] text-[clamp(52px,8vw,96px)] transition-colors duration-300"
               style={{ fontFamily: "var(--font-sf-pro)" }}
             >
-              <StaggerLink style={{ fontFamily: "var(--font-sf-pro)" }}>
+              <StaggerLink
+                ref={(el) => { staggerRefs.current[i] = el; }}
+                style={{ fontFamily: "var(--font-sf-pro)" }}
+                disableSelfHover
+              >
                 {skill.heading}
               </StaggerLink>
             </p>

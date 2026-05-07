@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { gsap } from "gsap";
 import SplitType from "split-type";
 
@@ -12,6 +12,12 @@ interface StaggerLinkProps {
   style?: React.CSSProperties;
   target?: string;
   rel?: string;
+  disableSelfHover?: boolean;
+}
+
+export interface StaggerLinkHandle {
+  enter: () => void;
+  leave: () => void;
 }
 
 const wrapperStyle = (extra?: React.CSSProperties): React.CSSProperties => ({
@@ -28,7 +34,7 @@ const dupStyle: React.CSSProperties = {
   display: "block",
 };
 
-export default function StaggerLink({
+const StaggerLink = forwardRef<StaggerLinkHandle, StaggerLinkProps>(function StaggerLink({
   children,
   as = "span",
   href,
@@ -36,11 +42,19 @@ export default function StaggerLink({
   style,
   target,
   rel,
-}: StaggerLinkProps) {
-  const aRef      = useRef<HTMLAnchorElement>(null);
-  const spanRef   = useRef<HTMLSpanElement>(null);
-  const primaryRef = useRef<HTMLSpanElement>(null);
-  const dupRef     = useRef<HTMLSpanElement>(null);
+  disableSelfHover = false,
+}, ref) {
+  const aRef        = useRef<HTMLAnchorElement>(null);
+  const spanRef     = useRef<HTMLSpanElement>(null);
+  const primaryRef  = useRef<HTMLSpanElement>(null);
+  const dupRef      = useRef<HTMLSpanElement>(null);
+  const enterRef    = useRef<() => void>(() => {});
+  const leaveRef    = useRef<() => void>(() => {});
+
+  useImperativeHandle(ref, () => ({
+    enter: () => enterRef.current(),
+    leave: () => leaveRef.current(),
+  }));
 
   useEffect(() => {
     const wrapper = (aRef.current ?? spanRef.current) as HTMLElement | null;
@@ -78,8 +92,13 @@ export default function StaggerLink({
       });
     };
 
-    wrapper.addEventListener("mouseenter", onEnter);
-    wrapper.addEventListener("mouseleave", onLeave);
+    enterRef.current = onEnter;
+    leaveRef.current = onLeave;
+
+    if (!disableSelfHover) {
+      wrapper.addEventListener("mouseenter", onEnter);
+      wrapper.addEventListener("mouseleave", onLeave);
+    }
 
     let lastWidth = window.innerWidth;
     const onResize = () => {
@@ -92,14 +111,16 @@ export default function StaggerLink({
     window.addEventListener("resize", onResize);
 
     return () => {
-      wrapper.removeEventListener("mouseenter", onEnter);
-      wrapper.removeEventListener("mouseleave", onLeave);
+      if (!disableSelfHover) {
+        wrapper.removeEventListener("mouseenter", onEnter);
+        wrapper.removeEventListener("mouseleave", onLeave);
+      }
       window.removeEventListener("resize", onResize);
       stPrimary?.revert();
       stDup?.revert();
       gsap.killTweensOf([...(stPrimary?.chars ?? []), ...(stDup?.chars ?? [])]);
     };
-  }, []);
+  }, [disableSelfHover]);
 
   const inner = (
     <>
@@ -128,4 +149,6 @@ export default function StaggerLink({
       {inner}
     </span>
   );
-}
+});
+
+export default StaggerLink;
