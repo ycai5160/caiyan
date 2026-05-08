@@ -19,10 +19,10 @@ const projects = [
   { slug: "pulse",       title: "Pulse",                  subtitle: "公平代币发行 DEX 的官网设计，以动感视觉节奏呼应产品「Launch. Curve. Soar.」的品牌调性。", thumbnail: "/thumbnail_pulse.webp",      url: "https://designer789.github.io/Pulse/" },
   { slug: "infolaunch",  title: "Info.Launch",            subtitle: "为 AI 项目代币发行平台设计的官网，以简洁的信息层级呈现复杂的 DeFi 机制。", thumbnail: "/thumbnail_infolaunch.webp", url: "https://infolaunch.netlify.app/" },
   { slug: "privai",      title: "PrivAI",                 subtitle: "融合隐私保护与 AI 自动化的 Web3 平台官网，深色科技风格强化产品的安全感与可信度。", thumbnail: "/thumbnail_privai.webp",     url: "https://privaiagent.netlify.app/" },
-  { slug: "lolforge",    title: "lol.Forge",              subtitle: "AI 驱动的 3D Meme 生成平台，视觉风格大胆夸张，与产品的娱乐属性高度契合。", thumbnail: "/thumbnail_lolforge.webp",   url: "https://lolforge.vercel.app/" },
-  { slug: "ocularai",    title: "OCULARAI",               subtitle: "为 AI 智能眼镜硬件项目打造的品牌落地页，视觉叙事围绕未来感穿戴设备展开。", thumbnail: "/thumbnail_ocularai.webp",   url: "https://ocular-ai.vercel.app/" },
+  { slug: "lolforge",    title: "lol.Forge",              subtitle: "AI 驱动的 3D Meme 生成平台，视觉风格大胆夸张，与产品的娱乐属性高度契合。", thumbnail: "/thumbnail_lolforge.webp",   url: "https://lolforge.netlify.app/" },
+  { slug: "ocularai",    title: "OCULARAI",               subtitle: "为 AI 智能眼镜硬件项目打造的品牌落地页，视觉叙事围绕未来感穿戴设备展开。", thumbnail: "/thumbnail_ocularai.webp",   url: "https://ocularai.netlify.app/" },
   { slug: "rankchain",   title: "RankChain",              subtitle: "链上钱包追踪与评级平台，以数据可视化为核心视觉语言，传达产品的专业与透明。", thumbnail: "/thumbnail_rankchain.webp",  url: "https://rankchain.netlify.app/" },
-  { slug: "metai",       title: "Met.AI",                 subtitle: "去中心化 AI 代理市场的品牌官网，以模块化视觉结构呈现复杂的基础设施产品。", thumbnail: "/thumbnail_metai.webp",      url: "https://www.metcoin.xyz/" },
+  { slug: "metai",       title: "Met.AI",                 subtitle: "去中心化 AI 代理市场的品牌官网，以模块化视觉结构呈现复杂的基础设施产品。", thumbnail: "/thumbnail_metai.webp",      url: "https://met-ai-9742aa.netlify.app//" },
   { slug: "credhub",     title: "Cred.Hub",               subtitle: "Web3 去中心化信誉协议的品牌官网，以清晰的视觉层级将抽象的信任机制具象化呈现。", thumbnail: "/thumbnail_credhub.webp",    url: "https://credhubprotocol.netlify.app/" },
 ];
 
