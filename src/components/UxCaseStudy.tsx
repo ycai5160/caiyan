@@ -11,11 +11,11 @@ gsap.registerPlugin(ScrollTrigger);
 const metaRows = [
   { label: "Keywords", value: "视频剪辑 · 内容创作 · AI 工具", flex: false },
   { label: "Role",     value: "用户研究 · 产品设计",            flex: false },
-  { label: "Scope",    value: "端到端 · 面向消费者",            flex: false },
+  { label: "Scope",    value: "MVP",            flex: false },
   { label: "Year",     value: "2026",                          flex: false },
   {
     label: "Overview",
-    value: `AI 转写工具普遍止步于"生成"，校对与样式统一仍需大量人工介入。通过用户访谈与工作流分析，识别核心痛点，围绕文本—时间轴联动编辑、模型置信度可视化、术语库与预设复用展开设计，覆盖从转写生成到多格式导出的完整链路。`,
+    value: `随着新媒体视频的高频发布需求提升，字幕制作所带来的重复性负担在创作者的工作流中日益凸显。自动转写工具虽能生成初稿，但创作者在仍需投入大量审校工作来保证发布内容的质量。本项目通过用户访谈与工作流分析，识别出创作者在字幕制作流程中的核心痛点，并围绕转写置信度可视化、遮挡检测及样式预设等展开设计，构建了从上传到导出的完整 MVP 核心链路。`,
     flex: true,
   },
 ];
@@ -108,7 +108,7 @@ export default function UxCaseStudy() {
             className="font-bold leading-5 text-accent text-[13px] md:text-[16px] tracking-[0.3rem]"
             style={{ fontFamily: "var(--font-siyuan)" }}
           >
-            个人端对端 UX 设计项目
+            个人 UX 设计项目
           </p>
         </div>
 
@@ -119,7 +119,7 @@ export default function UxCaseStudy() {
             className="font-bold text-[clamp(20px,3.5vw,40px)] text-fg tracking-[-0.8px] leading-tight"
             style={{ fontFamily: "var(--font-sf-pro)" }}
           >
-            Subtle／视频字幕转写与编辑平台
+            Subflow／AI 字幕生成与编辑工具
           </p>
 
           <div className="flex flex-col">
