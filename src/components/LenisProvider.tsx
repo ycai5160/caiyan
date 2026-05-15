@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -8,8 +9,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function LenisProvider({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+  const pathname = usePathname();
+
   useEffect(() => {
     const lenis = new Lenis();
+    lenisRef.current = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -19,9 +24,16 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
 
     return () => {
       lenis.destroy();
+      lenisRef.current = null;
       gsap.ticker.remove(tick);
     };
   }, []);
+
+  // Reset scroll to top on every route change
+  useEffect(() => {
+    lenisRef.current?.scrollTo(0, { immediate: true });
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   return <>{children}</>;
 }

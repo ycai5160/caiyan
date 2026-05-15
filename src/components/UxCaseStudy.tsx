@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -146,6 +147,16 @@ export default function UxCaseStudy() {
               </div>
             ))}
           </div>
+
+          {/* CTA */}
+          <Link
+            href="/work/subflow"
+            className="self-start mt-6 md:mt-8 inline-flex items-center gap-2 text-accent text-[13px] md:text-[14px] tracking-[-0.2px] hover:gap-3 transition-all duration-300"
+            style={{ fontFamily: "var(--font-sf-pro)" }}
+          >
+            View Case Study
+            <span aria-hidden>→</span>
+          </Link>
         </div>
       </div>
     </section>

@@ -45,6 +45,17 @@
   transform: scale(1);
 }
 
+/* ─── Case study reading typography ─── */
+@layer components {
+  .body-p {
+    color: var(--color-secondary);
+    font-size: 17px;
+    line-height: 1.88;
+    letter-spacing: -0.2px;
+    font-family: var(--font-siyuan);
+  }
+}
+
 @layer base {
   * {
     box-sizing: border-box;
