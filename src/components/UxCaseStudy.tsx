@@ -75,8 +75,8 @@ export default function UxCaseStudy() {
         className="aspect-[4/3] w-full md:aspect-auto md:flex-1 md:h-auto min-w-0 overflow-hidden relative"
       >
         <Image
-          src="/ux_case.webp"
-          alt="Subtle — UX case study"
+          src="/New_uxcase.png"
+          alt="Subflow — UX case study"
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"

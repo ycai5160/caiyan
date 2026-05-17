@@ -1,6 +1,10 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
+import promptImg from "../../../Prompt.png";
+import safezoneImg from "../../../overview-safezone.png";
+import editorImg from "../../../editor.png";
 
 export const metadata: Metadata = {
   title: "Subflow — UX Case Study",
@@ -14,54 +18,79 @@ const sc  = "var(--font-siyuan)";
 
 const features = [
   {
-    tag: "AI 置信度可视化",
-    desc: "将转录的不确定性直接呈现在文本中，让创作者知道应该把注意力集中在哪里。",
+    tag: "转录提示词",
+    desc: "系统允许创作者在转录前以自然语言描述视频内容，使 AI 在启动处理前获取相关的词汇语境。",
+    image: promptImg,
+    imageAlt: "转录提示词界面",
   },
   {
-    tag: "精准时间码编辑",
-    desc: "以内联双模式编辑器取代时间轴拖拽，支持粗调与精调两种操作方式。",
+    tag: "AI 置信度可视化",
+    desc: "将模型的识别置信度直接呈现在转录稿中，引导用户将注意力集中于易错区域，减少低效的逐行扫描。",
+    image: "/confidence.gif",
+    imageAlt: "AI 置信度可视化界面",
+    animated: true,
   },
   {
     tag: "安全区预览",
-    desc: "在导出前将平台 UI 遮挡区域可视化，避免字幕发布后被界面元素覆盖。",
+    desc: "在导出前可视化平台界面的遮挡区域，防止字幕发布后被平台界面元素覆盖。",
+    image: safezoneImg,
+    imageAlt: "安全区预览界面",
+  },
+];
+
+const principles = [
+  {
+    id: "01",
+    title: "事前干预",
+    desc: "在 AI 处理前提供上下文信息，降低对事后修正工具的依赖。",
+  },
+  {
+    id: "02",
+    title: "呈现不确定性",
+    desc: "向用户展示系统的识别置信度，以建立合理的系统预期。",
+  },
+  {
+    id: "03",
+    title: "保持操作上下文连贯",
+    desc: "字幕校对是一项连续的阅读任务，面板切换容易中断工作流，因此所有编辑操作应集中于当前视窗内完成。",
   },
 ];
 
 const decisions = [
   {
     id: "01",
-    title: "AI 置信度可视化",
+    title: "转录提示词",
     paragraphs: [
-      "AI 转录无法保证 100% 准确，而创作者倾向于逐行检查所有内容。设计机会在于帮助用户在校对过程中合理分配注意力。",
-      "AI 为每个转录词附带置信度分数，衡量模型对识别结果的确定程度。低于阈值的词汇会在视觉上被标记，提示用户这些位置值得重点核查。目标是将注意力从对每个词的均等扫描，引导至真正需要判断的地方。",
-      "在修正交互上，我最初探索了弹出层方案——点击标记词触发建议弹窗。问题在于需要额外的操作步骤才能看到备选内容，打断了校对节奏。最终改为幽灵建议方案：备选词内联显示在标记词下方，按 Tab 键一键确认；若建议有误，直接输入即可，幽灵文字立即消失，不产生干扰。",
-      "校对体验因此更接近阅读，而非逐条审核。",
+      "AI 转录在处理垂直领域术语、嘉宾姓名、网络用语及文化背景词时错误率较高。由于模型在启动前缺乏视频内容信息，识别错误会增加下游的校对工作量。",
+      "因此，本产品在转录开始前引入上下文提供机制。配置阶段设有文本输入框，允许创作者使用自然语言描述视频内容。输入框内提供预期格式的辅助提示，例如「两位主持人评测摄影机，讨论动态范围、色彩科学与传感器尺寸」。创作者提供描述后，该上下文信息会在 AI 处理音频前传入语音识别系统。",
+      "此字段用于描述视频内容，而非向 AI 下达直接指令。界面中的辅助提示协助用户理解此区别，减少了说明文字的使用。当前市场部分消费级工具通常直接进入转录环节，缺少上下文输入步骤，该功能弥补了此环节的缺失。",
     ],
   },
   {
     id: "02",
-    title: "时间码编辑",
+    title: "AI 置信度可视化",
     paragraphs: [
-      "调整字幕时间轴是字幕工作流中最耗时的步骤之一。传统的时间轴拖拽操作存在两个问题：拖拽目标区域小且难以精准点击，帧级定位所需的精度超出了拖拽交互的可靠范围。",
-      "解决方案是以双模式时间码编辑器取代拖拽操作。时间码内联显示在每个字幕块旁，点击后弹出包含滑块与输入框的编辑层。滑块用于粗略定位，输入框用于精确调整。编辑操作在上下文中完成，无需切换至独立面板。",
-      "两种模式分别对应创作者思考时间的两个层级——先确定大致范围，再精确到具体帧。",
+      "即使提供上下文，AI 转录也客观存在误差，而创作者习惯逐行排查。设计的重点在于协助用户合理分配注意力，而非完全消除校对环节。",
+      "AI 为生成的每个词汇计算置信度分数，以反映识别结果的可靠性。系统在视觉上对低于置信度阈值的词汇进行高亮并添加下划线，提示用户优先核查。该设计将用户的注意力从逐词扫描引导至需要人工判断的区域。",
+      "针对转录错误，本设计的策略是通过界面辅助用户高效处理模型的不确定性，而非掩盖系统局限。",
+      "在交互修正方面，最终方案采用轻量化的内联建议提示。备选词直接显示在标记词下方，用户可使用 Tab 键确认。若建议有误，直接输入正确内容后提示文字即自动消失，降低了视觉干扰。",
     ],
   },
   {
     id: "03",
-    title: "术语库",
+    title: "时间码与讲者编辑",
     paragraphs: [
-      "专有名词是 AI 转录中误识率最高的类别。在没有记忆机制的情况下，创作者需要在每个视频中重复修正相同的词汇。设计挑战在于如何建立这种记忆，同时不增加独立的操作任务。",
-      "术语库在转录配置阶段预先加载——早于 AI 处理音频。选择术语库后，工具提示会确认即将应用的词汇范围，让创作者在提交转录前对 AI 的处理优先级有明确预期。",
-      "编辑过程中，修正某个词汇时会同步出现内联「添加至术语库」选项，一键保存，不中断当前编辑流程。",
+      "每个字幕块显示时间码和讲者标签，两者的编辑操作均在当前视窗内完成，无需切换面板。",
+      "时间码：传统拖拽字幕块的方式精度较低。本方案支持点击内联时间码触发编辑层，包含滑块与输入框。滑块用于快速定位，输入框用于精确微调，实现先粗后精的调节。",
+      "讲者标签：每个字幕块附带讲者标记。用户点击后可在转录稿中进行内联编辑，支持重命名、重新分配或合并讲者。此设计提高了转录稿的可读性，并支持在后续样式设定阶段按讲者快速应用字幕风格，减少了配置步骤。",
     ],
   },
   {
     id: "04",
     title: "安全区预览",
     paragraphs: [
-      "TikTok、Reels 等平台会在视频画面固定区域叠加界面元素——按钮、操作手柄、平台字幕。字幕若落在这些区域，发布后会被遮挡，但问题在编辑阶段不可见。",
-      "视频预览区内置可切换的安全区叠加层，使潜在冲突在导出前可见。操作不增加额外步骤——一次切换，边界即刻显示，创作者可以直接判断是否需要调整位置。",
+      "短视频平台通常在画面固定区域叠加界面元素。字幕若处于该区域则易被遮挡，而在传统编辑阶段此问题较难察觉。",
+      "本产品在视频预览区内置安全区叠加层开关。开启后即可显示平台界面边界，协助创作者判断并调整字幕位置，在导出前避免遮挡冲突。",
     ],
   },
 ];
@@ -70,35 +99,28 @@ const phases = [
   {
     label: "配置",
     paragraphs: [
-      "新建项目从上传文件或粘贴链接开始。配置界面将决策控制在最小范围——音频语言与讲者标签均为自动检测，创作者只需选择转录模型，并决定是否应用术语库。对于已有字幕文件的用户，「导入现有字幕」选项在此阶段直接可见。",
+      "新建项目支持上传文件或粘贴链接。创作者在提示词字段中描述视频内容，可以手动选择语言、应用术语库。对于包含特定词汇的内容，该步骤有助于提升初步转录的准确度。",
     ],
+    image: null,
+    imageAlt: "",
   },
   {
     label: "编辑",
     paragraphs: [
-      "编辑界面将转录稿、视频预览与样式控制集于同一屏幕，创作者无需切换界面即可完成字幕制作的完整流程。",
-      "触发 AI 审阅后，转录稿进入专注校对模式——低置信度词汇高亮并添加下划线标记，幽灵建议内联显示。创作者只需处理被标记的词汇，按 Tab 键确认建议，或直接输入修正内容。",
-      "字幕时间调整通过内联时间码编辑器完成——点击任意字幕块上的时间戳，弹出包含滑块与输入框的编辑层，分别对应粗调与精调两种操作需求。",
-      "当修正词涉及重复出现的专有名词时，内联「添加至术语库」选项同步出现，一键保存，不中断当前编辑流程。",
+      "编辑器整合为单一工作区。转录稿位于界面中央，为主要校对区域。视频预览区位于右侧，提供实时画面参考。样式控制面板位于左侧，供需要时调用。",
+      "AI 审阅、时间码编辑、讲者编辑和安全区预览均集成于此界面内。触发 AI 审阅后，低置信度词汇高亮显示，并内联呈现修改建议。安全区预览可通过视频面板开关切换。时间码和讲者编辑可通过点击转录块触发内联编辑层，保持操作连贯。",
     ],
+    image: editorImg,
+    imageAlt: "编辑器界面",
   },
   {
     label: "预览与导出",
     paragraphs: [
-      "导出前，视频预览中的安全区叠加层将平台界面冲突区域可视化——直接显示 TikTok、Reels 等平台的界面元素将覆盖视频画面的具体位置。确认无误后，按所需格式导出文件。",
+      "导出前，用户可通过安全区叠加层查看短视频平台的界面元素边界，检查是否存在视觉冲突。确认无误后，按所需格式导出文件。",
     ],
+    image: null,
+    imageAlt: "",
   },
-];
-
-const flowSteps = [
-  { node: "上传文件 / 粘贴链接",   note: "" },
-  { node: "转录配置",               note: "语言 · 模型 · 术语库" },
-  { node: "AI 处理",                note: "音频转录" },
-  { node: "编辑界面",               note: "转录稿 · 时间码 · 拆分 · 合并" },
-  { node: "AI 审阅（可选）",        note: "置信度高亮 · 幽灵建议" },
-  { node: "字幕样式",               note: "预设或自定义" },
-  { node: "预览",                   note: "安全区检查" },
-  { node: "导出",                   note: "" },
 ];
 
 /* ── Page ─────────────────────────────────────────────── */
@@ -109,12 +131,8 @@ export default function SubflowCaseStudy() {
       <ReadingProgress />
 
       {/* ── Sticky nav ── */}
-      <nav
-        className="sticky top-0 z-50 border-b border-edge bg-bg/90 backdrop-blur-md"
-      >
-        <div
-          className="max-w-[680px] mx-auto px-6 md:px-0 h-[52px] flex items-center justify-between"
-        >
+      <nav className="sticky top-0 z-50 border-b border-edge bg-bg/90 backdrop-blur-md">
+        <div className="max-w-[680px] mx-auto px-6 md:px-0 h-[52px] flex items-center justify-between">
           <Link
             href="/#ux"
             className="text-muted text-[13px] hover:text-fg transition-colors duration-200"
@@ -122,18 +140,13 @@ export default function SubflowCaseStudy() {
           >
             ← Work
           </Link>
-          <span
-            className="text-muted text-[12px] tracking-wide"
-            style={{ fontFamily: sf }}
-          >
-            约 8 分钟
+          <span className="text-muted text-[12px] tracking-wide" style={{ fontFamily: sf }}>
+            约 10 分钟
           </span>
         </div>
       </nav>
 
-      <article
-        className="max-w-[680px] mx-auto px-6 md:px-0 pt-14 md:pt-20 pb-28 md:pb-36"
-      >
+      <article className="max-w-[680px] mx-auto px-6 md:px-0 pt-14 md:pt-20 pb-28 md:pb-36">
 
         {/* ── Header ── */}
         <header className="mb-14 md:mb-18">
@@ -151,9 +164,7 @@ export default function SubflowCaseStudy() {
             Subflow
           </h1>
 
-          <p
-            className="text-secondary text-[19px] leading-[1.7] tracking-[-0.3px] mb-12"
-          >
+          <p className="text-secondary text-[19px] leading-[1.7] tracking-[-0.3px] mb-12">
             面向视频创作者的 AI 字幕编辑工具
           </p>
 
@@ -183,40 +194,44 @@ export default function SubflowCaseStudy() {
           </div>
         </header>
 
-        <hr className="border-edge mb-14 md:mb-18" />
-
         {/* ── Body ── */}
         <div className="flex flex-col gap-14 md:gap-18">
 
           {/* Overview */}
           <Section label="项目概述">
             <p className="body-p">
-              字幕制作是创作者工作流中最后一个尚未被自动化解决的环节。AI 负责转录，但校对、时间轴调整和样式设定仍由创作者手动完成。
+              Subflow 是一款 AI 辅助字幕编辑工具。在转录结果客观存在误差的前提下，该工具侧重于通过界面设计优化创作者处理输出内容的工作效率。
             </p>
             <p className="body-p">
-              Subflow 是一款 AI 辅助字幕编辑工具，针对三个具体的效率瓶颈进行设计：
+              解决方案聚焦工作流的两个关键节点。首先，通过上游上下文输入，降低进入编辑器前的初始错误率。其次，通过界面优化，缩减后续的验证耗时。
             </p>
-
             <div className="border-y border-edge divide-y divide-edge">
               {features.map((f, i) => (
-                <div key={f.tag} className="flex gap-5 py-5">
-                  <span
-                    className="shrink-0 text-muted text-[12px] tabular-nums pt-0.5 w-5"
-                    style={{ fontFamily: sf }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex flex-col gap-1">
+                <div key={f.tag} className="py-5">
+                  <div className="flex gap-5">
                     <span
-                      className="text-fg text-[15px] font-bold tracking-[-0.3px]"
+                      className="shrink-0 text-muted text-[12px] tabular-nums pt-0.5 w-5"
                       style={{ fontFamily: sf }}
                     >
-                      {f.tag}
+                      {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span className="text-secondary text-[15px] leading-[1.8] tracking-[-0.2px]">
-                      {f.desc}
-                    </span>
+                    <div className="flex flex-col gap-1">
+                      <span
+                        className="text-fg text-[15px] font-bold tracking-[-0.3px]"
+                        style={{ fontFamily: sf }}
+                      >
+                        {f.tag}
+                      </span>
+                      <span className="text-secondary text-[15px] leading-[1.8] tracking-[-0.2px]">
+                        {f.desc}
+                      </span>
+                    </div>
                   </div>
+                  {f.image && (
+                    f.animated
+                      ? <img src={f.image as string} alt={f.imageAlt} className="w-full border border-edge mt-4" />
+                      : <Image src={f.image} alt={f.imageAlt} className="w-full border border-edge mt-4" placeholder="blur" />
+                  )}
                 </div>
               ))}
             </div>
@@ -225,10 +240,13 @@ export default function SubflowCaseStudy() {
           {/* Problem */}
           <Section label="问题背景">
             <p className="body-p">
-              AI 转录本应消除视频制作中最耗时的环节之一。对大多数创作者而言，转录本身确实快了——但随之而来的校对阶段并没有。
+              随着短视频平台内容更新频率的提高，字幕已从增强信息可读性的附加功能，转变为内容生产的标准配置。
             </p>
             <p className="body-p">
-              工具已经存在，摩擦依然存在。我想弄清楚原因。
+              虽然人工智能提升了语音转录的处理速度，降低了时间成本，但字幕制作的整体效率并未随之大幅提高。转录耗时缩短后，流程中出现了新的瓶颈，即创作者仍需逐行检查、修正并确认系统的输出结果。
+            </p>
+            <p className="body-p">
+              因此，当前流程的主要挑战在于用户如何高效验证系统的生成结果。
             </p>
           </Section>
 
@@ -236,50 +254,64 @@ export default function SubflowCaseStudy() {
           <Section label="研究与发现">
             <SubSection title="竞品分析">
               <p className="body-p">
-                市场上的工具大致分为两类：以 Descript、Otter 为代表的转录优先型工具，注重准确率但样式控制有限；以 Submagic、VEED 为代表的创作者优先型工具，注重视觉效果但将转录稿视为黑箱——只输出结果，没有置信度信号，也没有校对工作流。
-              </p>
-              <p className="body-p">
-                没有任何工具覆盖完整的闭环：生成 → 校对 → 修正 → 样式。
+                目前市场的相关工具主要分为两类。第一类为转录优先型工具，如 Descript 和 Otter，侧重转录准确率与文稿处理。第二类为创作者优先型工具，如 Submagic 和 VEED，侧重动态字幕与视觉包装。这两类产品分别优化了工作流的不同环节，但均未充分解决字幕生成后的验证问题。转录工具缺乏高效的校对机制，创作者工具则假定用户会自行解决文本的准确性问题。
               </p>
             </SubSection>
 
             <SubSection title="用户研究">
               <p className="body-p">
-                我对 9 位视频创作者进行了开放式问卷调研，要求他们逐步还原上一次字幕制作的完整过程。
+                我们针对 9 位视频创作者开展了问卷调研，要求受访者还原近期制作字幕的完整流程。结果显示，校对环节占整体制作时间的 30% 至 50%。部分受访者表示，期望工具能自动标注潜在的错误区域。另有受访者指出，AI 难以准确识别特定领域的网络词汇及文化背景词。
               </p>
               <p className="body-p">
-                结果呈现出一致的规律：校对环节占据了总制作时间的 30–50%。最耗力的步骤始终相同——逐行检查，却不知道哪里出了错。一位受访者描述了他理想中的工具：「能标注出可能有误的位置」——他们希望 AI 展示自己的不确定性，而不是将其隐藏。
+                将字幕工作流拆解为五个阶段后，其时间分布规律显现。校对与样式精修阶段占据了编辑时间的主要比重，涵盖逐字核对、时间轴调整及样式一致性维护，而前期处理则相对顺畅。
               </p>
-              <p className="body-p">
-                专有名词是第二高频的痛点——相同的错误在每一个视频中反复出现，工具没有记忆机制。
-              </p>
-            </SubSection>
-
-            <SubSection title="设计机会">
-              <p className="body-p">
-                问题的核心不在于构建一个更快的转录引擎，而在于重新设计校对体验——让创作者把时间花在判断上，而不是花在寻找错误上。
-              </p>
+              <WorkflowChart />
             </SubSection>
           </Section>
 
-          {/* Design Direction */}
-          <Section label="设计方向">
+          {/* Insights */}
+          <Section label="洞察">
             <p className="body-p">
-              在进入设计之前，我梳理了创作者当前的字幕编辑流程，重点标注时间实际流向何处。
+              分析用户实际耗时的环节后，可总结出四项主要规律。第一，AI 在处理视频时缺乏上下文信息，无法获取主题、讲者及专有词汇，导致部分错误在转录前已经产生。第二，系统缺乏跨项目的记忆机制，相同词汇在不同视频中容易重复识别错误。第三，在编辑阶段，创作者由于无法预判错误位置，需要对各行字幕分配同等注意力，增加了认知负担。第四，执行修正操作时，时间码、讲者及样式等调整功能分散于不同面板，增加了操作复杂度。
             </p>
             <p className="body-p">
-              流程表面上清晰：生成转录稿 → 校对 → 调整时间轴 → 设定样式 → 导出。但其中两个步骤存在结构性问题。校对环节在没有任何错误信号的情况下，默认成为全文逐行扫描——每一行都获得同等关注，无论实际出错概率高低。时间轴调整进一步加剧了这一问题——拖拽操作难以精准落点，创作者反复过冲、回调、重试。研究中 30–50% 的时间损耗，主要集中在这两个步骤。
+              初步研究将问题界定为字幕校对耗时较长。进一步分析表明，主要问题不在于 AI 的准确率上限，而在于用户需要全面检查所有输出内容。即使转录整体准确率较高，由于界面未提供 AI 识别置信度的相关提示，创作者仍需逐行排查。因此，生成成本虽然下降，验证成本依然较高。
             </p>
-
-            
-
-            {/* Key question — background treatment, no banned border-l */}
-            <div className="bg-surface px-8 py-8 text-center">
-              <p
-                className="text-fg text-[17px] md:text-[18px] leading-[1.7] tracking-[-0.3px]"
-              >
-                我们如何设计一套 AI 辅助的字幕工作流，帮助创作者高效完成从转录到可发布字幕的全过程？
+            <p className="body-p">
+              上述分析为产品设计提供了方向。产品的核心目标设定为协助用户更高效地处理具有误差的 AI 输出结果，而非单纯提升 AI 准确率。产品理念从自动化优先转向优化人机协作工作流，将 AI 的功能扩展至降低用户在验证阶段的认知负荷。
+            </p>
+            <div className="bg-surface px-8 py-10">
+              <p className="text-fg text-[18px] md:text-[20px] leading-[1.65] tracking-[-0.4px]">
+                如何设计一套 AI 辅助的字幕工作流，以协助创作者高效完成从转录到发布的完整流程？
               </p>
+            </div>
+          </Section>
+
+          {/* Design Principles */}
+          <Section label="设计原则">
+            <p className="body-p">基于上述规律，本产品确立了三项设计原则。</p>
+            <div className="border-y border-edge divide-y divide-edge">
+              {principles.map((p) => (
+                <div key={p.id} className="flex gap-5 py-5">
+                  <span
+                    className="shrink-0 text-muted text-[12px] tabular-nums pt-0.5 w-5"
+                    style={{ fontFamily: sf }}
+                  >
+                    {p.id}
+                  </span>
+                  <div className="flex flex-col gap-1">
+                    <span
+                      className="text-fg text-[15px] font-bold tracking-[-0.3px]"
+                      style={{ fontFamily: sf }}
+                    >
+                      {p.title}
+                    </span>
+                    <span className="text-secondary text-[15px] leading-[1.8] tracking-[-0.2px]">
+                      {p.desc}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </Section>
 
@@ -288,7 +320,6 @@ export default function SubflowCaseStudy() {
             <div className="flex flex-col">
               {decisions.map((d) => (
                 <div key={d.id} className="pt-10 md:pt-12 border-t border-edge">
-                  {/* Large decorative number */}
                   <span
                     aria-hidden="true"
                     className="block font-bold leading-none select-none mb-3 tracking-[-0.05em]"
@@ -321,42 +352,60 @@ export default function SubflowCaseStudy() {
           {/* Design Presentation */}
           <Section label="设计呈现">
             <p className="body-p">
-              Subflow 采用线性三阶段流程：配置 → 编辑 → 导出。每个阶段的设计目标一致：减少创作者需要主动做出的决策，让注意力保持在内容本身。
+              Subflow 的架构划分为两个主要区域。项目主页用于管理项目、术语库及预设资产，项目工作空间用于执行编辑。编辑器采用单屏工作界面，整合了 AI 审阅、安全区预览和样式控制等功能，减少了视图切换。
+            </p>
+            <p className="body-p">
+              项目内部遵循配置、编辑、导出的线性工作流。主要决策在配置阶段完成，使编辑器功能集中于校对与样式调整。
             </p>
             <div className="flex flex-col mt-4">
               {phases.map((ph, i) => (
-                <div
-                  key={ph.label}
-                  className={`py-8 border-t border-edge ${i === phases.length - 1 ? "border-b" : ""}`}
-                >
-                  <h3
-                    className="text-fg text-[15px] font-bold tracking-[-0.3px] mb-5"
-                    style={{ fontFamily: sf }}
-                  >
-                    {ph.label}
-                  </h3>
+                <div key={ph.label} className="py-8 border-t border-edge">
+                  <div className="flex items-baseline gap-3 mb-5">
+                    <span
+                      className="text-muted text-[11px] tabular-nums shrink-0"
+                      style={{ fontFamily: sf }}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <h3
+                      className="text-fg text-[15px] font-bold tracking-[-0.3px]"
+                      style={{ fontFamily: sf }}
+                    >
+                      {ph.label}
+                    </h3>
+                  </div>
                   <div className="flex flex-col gap-4">
                     {ph.paragraphs.map((p, j) => (
                       <p key={j} className="body-p">
                         {p}
                       </p>
                     ))}
+                    {ph.image && (
+                      <Image
+                        src={ph.image}
+                        alt={ph.imageAlt}
+                        className="w-full border border-edge mt-2"
+                        placeholder="blur"
+                      />
+                    )}
                   </div>
                 </div>
               ))}
             </div>
           </Section>
 
+         
+
           {/* Retrospective */}
           <Section label="回顾与反思">
             <p className="body-p">
-              这个项目中最值得回顾的决策是 AI 置信度可视化——不在于执行层面的复杂度，而在于问题的定义方式。面对转录错误时，直觉反应往往是寻求更好的模型。设计的转变在于重新提问：界面如何帮助用户在模型并不完美的前提下更高效地工作。这一从「模型质量」到「交互质量」的框架转换，决定了整个编辑体验的设计方向。
+              本项目的核心洞察在于重新分析流程瓶颈，即传统工作流在错误发生前后均未提供有效的干预手段。转录提示词机制为模型提供上下文，降低了初始错误率；AI 置信度可视化提供了视觉提示，提高了校对效率。
             </p>
             <p className="body-p">
-              回顾来看，最明显的设计缺口在于 AI 审阅功能本身的可发现性。这是产品差异化程度最高的功能，但它是可选的，依赖用户主动触发。初次使用的创作者若未注意到这个入口，将得到一份普通的转录稿，没有任何校对引导——而这恰恰是该功能要解决的核心问题。在转录完成后增加一个合适的引导提示，是目前最直接的改进方向。
+              项目仍有两处改进空间。第一，转录提示词功能缺少反馈回路。用户难以直观感知 AI 如何利用提供的上下文，这影响了功能信任度的建立。第二，缺少针对初次使用的引导机制。运行前提供功能预览或效果对比有助于提升使用体验。
             </p>
             <p className="body-p">
-              多语言字幕支持是 MVP 范围外最重要的未解问题。需要在多个市场发布内容的创作者，往往需要为同一视频生成不同语言的字幕轨道，但当前流程将每种语言视为独立项目处理。在原始字幕旁边支持第二语言轨道的并行编辑，是产品下一阶段最清晰的演进方向。
+              此外，多语言字幕支持是后续的重要方向。针对跨市场分发需求，支持第二语言轨道的并行编辑将是下一阶段的开发重点。
             </p>
           </Section>
 
@@ -417,14 +466,171 @@ function SubSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-4 pt-6 first:pt-0">
-      <h3
-        className="text-fg text-[14px] font-bold tracking-[-0.2px]"
+    <div className="flex flex-col gap-4 pt-8 first:pt-0">
+      <p
+        className="text-muted text-[10px] tracking-[0.22em] uppercase"
         style={{ fontFamily: "var(--font-sf-pro)" }}
       >
         {title}
-      </h3>
+      </p>
       {children}
+    </div>
+  );
+}
+
+function WorkflowChart() {
+  const stages = [
+    {
+      icon: "📥",
+      label: "导入媒体",
+      badge: null,
+      focus: false,
+      pain: ["上传路径不直观", "文件上传失败且缺乏明确提示"],
+      opp:  ["失败时提供清晰错误提示与重试入口"],
+    },
+    {
+      icon: "⚙️",
+      label: "生成转写文本",
+      badge: null,
+      focus: false,
+      pain: ["转写等待过程缺乏进度感知", "音频质量差时准确率下降，但无预警"],
+      opp:  ["显示剩余时间与进度", "低质量音频提前给出风险提示"],
+    },
+    {
+      icon: "✏️",
+      label: "校正文稿与样式精修",
+      badge: "⏱ 最耗时",
+      focus: true,
+      pain: ["需逐句核对，无法快速定位错误", "同类词汇错误反复出现", "时间码细调繁琐耗时", "多条视频难以保持样式统一"],
+      opp:  ["文本—时间轴联动编辑", "快速定位最可能出错的位置", "建立项目级样式库与预设"],
+    },
+    {
+      icon: "🌐",
+      label: "多语字幕与本地化",
+      badge: null,
+      focus: false,
+      pain: ["译文始终需要二次修订", "网络词汇、文化梗与专业术语难以识别"],
+      opp:  ["翻译时自动应用术语库"],
+    },
+    {
+      icon: "📤",
+      label: "预览与导出",
+      badge: null,
+      focus: false,
+      pain: ["不同平台需要多种导出格式", "文件命名混乱"],
+      opp:  ["按平台保存导出预设", "自动生成包含信息的文件名"],
+    },
+  ];
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "min(900px, 100vw)",
+      }}
+    >
+      <div className="overflow-x-auto px-6 md:px-0">
+        <div style={{ minWidth: 560 }}>
+
+          {/* Phase rail */}
+          <div
+            className="grid mb-3"
+            style={{ gridTemplateColumns: "2fr 1fr 2fr" }}
+          >
+            <div>
+              <p className="text-muted text-[9px] tracking-[0.2em] uppercase mb-2" style={{ fontFamily: sf }}>
+                转写前
+              </p>
+              <div className="h-px bg-edge" />
+            </div>
+            <div className="px-px">
+              <p className="text-accent text-[9px] tracking-[0.2em] uppercase mb-2 text-center" style={{ fontFamily: sf }}>
+                最耗时
+              </p>
+              <div className="h-px bg-accent" />
+            </div>
+            <div>
+              <p className="text-muted text-[9px] tracking-[0.2em] uppercase mb-2 text-right" style={{ fontFamily: sf }}>
+                转写后
+              </p>
+              <div className="h-px bg-edge" />
+            </div>
+          </div>
+
+          {/* Columns */}
+          <div
+            className="grid gap-px bg-edge border border-edge"
+            style={{ gridTemplateColumns: "repeat(5, 1fr)" }}
+          >
+            {stages.map((s) => (
+              <div
+                key={s.label}
+                className={`flex flex-col p-3 ${s.focus ? "bg-surface" : "bg-bg"}`}
+              >
+                {s.badge && (
+                  <p
+                    className="text-accent text-[9px] tracking-[0.1em] uppercase font-bold mb-2"
+                    style={{ fontFamily: sf }}
+                  >
+                    {s.badge}
+                  </p>
+                )}
+
+                <div className="mb-3">
+                  <div className="text-sm mb-1">{s.icon}</div>
+                  <p
+                    className={`text-[11px] font-bold leading-snug tracking-[-0.2px] ${s.focus ? "text-fg" : "text-secondary"}`}
+                    style={{ fontFamily: sf }}
+                  >
+                    {s.label}
+                  </p>
+                </div>
+
+                <div className="mb-3">
+                  <p className="text-[9px] tracking-[0.15em] uppercase text-muted mb-1.5" style={{ fontFamily: sf }}>
+                    痛点
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {s.pain.map((item, i) => (
+                      <div key={i} className="flex gap-1.5 items-start">
+                        <div
+                          className="shrink-0 rounded-full bg-accent mt-[5px]"
+                          style={{ width: 3, height: 3 }}
+                        />
+                        <span className="text-[11px] text-secondary leading-snug" style={{ fontFamily: sc }}>
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[9px] tracking-[0.15em] uppercase text-muted mb-1.5" style={{ fontFamily: sf }}>
+                    设计机会
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {s.opp.map((item, i) => (
+                      <div key={i} className="flex gap-1.5 items-start">
+                        <div
+                          className="shrink-0 rounded-full mt-[5px]"
+                          style={{ width: 3, height: 3, background: "var(--color-edge-lg)" }}
+                        />
+                        <span className="text-[11px] text-muted leading-snug" style={{ fontFamily: sc }}>
+                          {item}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }

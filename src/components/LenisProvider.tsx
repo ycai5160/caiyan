@@ -32,7 +32,9 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
   // Reset scroll to top on every route change
   useEffect(() => {
     lenisRef.current?.scrollTo(0, { immediate: true });
-    window.scrollTo(0, 0);
+    // Recalculate scroll dimensions after new page content is laid out
+    const id = setTimeout(() => lenisRef.current?.resize(), 50);
+    return () => clearTimeout(id);
   }, [pathname]);
 
   return <>{children}</>;
