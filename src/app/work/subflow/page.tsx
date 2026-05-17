@@ -2,9 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import ReadingProgress from "@/components/ReadingProgress";
-import promptImg from "../../../Prompt.png";
-import safezoneImg from "../../../overview-safezone.png";
-import editorImg from "../../../editor.png";
+
+const promptImg = "/Prompt.png";
+const safezoneImg = "/overview-safezone.png";
+const editorImg = "/editor.png";
 
 export const metadata: Metadata = {
   title: "Subflow — UX Case Study",
@@ -230,7 +231,7 @@ export default function SubflowCaseStudy() {
                   {f.image && (
                     f.animated
                       ? <img src={f.image as string} alt={f.imageAlt} className="w-full border border-edge mt-4" />
-                      : <Image src={f.image} alt={f.imageAlt} className="w-full border border-edge mt-4" placeholder="blur" />
+                      : <Image src={f.image} alt={f.imageAlt} className="w-full border border-edge mt-4" width={1920} height={1080} style={{ width: "100%", height: "auto" }} />
                   )}
                 </div>
               ))}
@@ -385,7 +386,9 @@ export default function SubflowCaseStudy() {
                         src={ph.image}
                         alt={ph.imageAlt}
                         className="w-full border border-edge mt-2"
-                        placeholder="blur"
+                        width={1920}
+                        height={1080}
+                        style={{ width: "100%", height: "auto" }}
                       />
                     )}
                   </div>
