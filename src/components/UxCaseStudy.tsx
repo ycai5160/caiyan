@@ -151,7 +151,7 @@ export default function UxCaseStudy() {
           {/* CTA */}
           <Link
             href="/work/subflow"
-            className="self-start mt-6 md:mt-8 inline-flex items-center gap-2 text-accent text-[13px] md:text-[14px] tracking-[-0.2px] hover:gap-3 transition-all duration-300"
+            className="self-start mt-6 md:mt-8 inline-flex items-center gap-2 px-4 py-2.5 text-accent text-[13px] md:text-[14px] tracking-[-0.2px] border border-accent/30 hover:border-accent hover:gap-3 transition-all duration-300"
             style={{ fontFamily: "var(--font-sf-pro)" }}
           >
             View Case Study
