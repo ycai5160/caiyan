@@ -1,6 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import type { Metadata } from "next";
+
+const MermaidChart = dynamic(() => import("@/components/MermaidChart"), { ssr: false });
 
 export const metadata: Metadata = {
   title: "Subflow — UX Case Study",
@@ -328,7 +331,7 @@ export default function SubflowCaseStudy() {
               项目内的操作流程呈现线性结构，分为配置、编辑和导出三个阶段。决策在配置阶段前置完成，使编辑器能够完全专注于校对与样式调整。
             </p>
 
-            <UserFlowDiagram />
+            <MermaidChart />
 
             <div className="flex flex-col mt-4">
               {phases.map((ph, i) => (
@@ -562,110 +565,3 @@ function WorkflowTable() {
   );
 }
 
-/* ── User flow diagram ─────────────────────────────────── */
-
-type FlowNodeType = "terminal" | "screen" | "process" | "decision";
-
-interface FlowNode {
-  label: string;
-  type: FlowNodeType;
-  no?: string;
-}
-
-function UserFlowDiagram() {
-  const nodes: FlowNode[] = [
-    { label: "开始", type: "terminal" },
-    { label: "登录 / 注册", type: "screen" },
-    { label: "认证成功？", type: "decision", no: "返回登录" },
-    { label: "项目主页", type: "screen" },
-    { label: "上传文件 / 粘贴链接", type: "screen" },
-    { label: "文件有效？", type: "decision", no: "重新上传" },
-    { label: "转录配置", type: "screen" },
-    { label: "AI 转录处理中", type: "process" },
-    { label: "转录成功？", type: "decision", no: "重新上传" },
-    { label: "编辑器", type: "screen" },
-    { label: "完成编辑？", type: "decision", no: "继续修改" },
-    { label: "导出", type: "screen" },
-    { label: "结束", type: "terminal" },
-  ];
-
-  return (
-    <div className="border border-edge p-6">
-      <p
-        className="text-muted text-[10px] tracking-[0.2em] uppercase mb-5"
-        style={{ fontFamily: "var(--font-sf-pro)" }}
-      >
-        用户操作流程
-      </p>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {nodes.map((node, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
-            {/* Node + connector */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 220, flexShrink: 0 }}>
-              <FlowNodeBox node={node} />
-              {i < nodes.length - 1 && (
-                <div style={{ width: 1, height: 18, background: "var(--color-edge-md)", flexShrink: 0 }} />
-              )}
-            </div>
-            {/* Error branch */}
-            {node.no && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 7 }}>
-                <div style={{ width: 20, height: 1, background: "var(--color-edge-md)" }} />
-                <span
-                  style={{
-                    fontFamily: "var(--font-sf-pro)",
-                    fontSize: 11,
-                    color: "var(--color-muted)",
-                    letterSpacing: "0.02em",
-                  }}
-                >
-                  否 → {node.no}
-                </span>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function FlowNodeBox({ node }: { node: FlowNode }) {
-  const base: React.CSSProperties = {
-    fontFamily: "var(--font-sf-pro)",
-    fontSize: 12,
-    letterSpacing: "-0.1px",
-    padding: "5px 14px",
-    textAlign: "center",
-    width: "100%",
-  };
-
-  const styles: Record<FlowNodeType, React.CSSProperties> = {
-    terminal: {
-      ...base,
-      borderRadius: 999,
-      border: "1px solid var(--color-edge-md)",
-      color: "var(--color-fg)",
-      background: "var(--color-surface)",
-    },
-    screen: {
-      ...base,
-      border: "1px solid var(--color-edge-md)",
-      color: "var(--color-fg)",
-    },
-    process: {
-      ...base,
-      border: "1px dashed var(--color-edge-md)",
-      color: "var(--color-muted)",
-      background: "var(--color-surface)",
-    },
-    decision: {
-      ...base,
-      border: "1px solid var(--color-edge-lg)",
-      color: "var(--color-secondary)",
-      fontStyle: "italic",
-    },
-  };
-
-  return <div style={styles[node.type]}>{node.label}</div>;
-}
