@@ -61,7 +61,12 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    cursor: none !important;
+  }
+
+  @media (pointer: fine) {
+    * {
+      cursor: none !important;
+    }
   }
 
   html,

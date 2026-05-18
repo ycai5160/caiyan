@@ -7,8 +7,13 @@ export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!window.matchMedia("(pointer: fine)").matches) return;
+
     const el = cursorRef.current;
     if (!el) return;
+
+    // Own all transform management — no conflict with React's inline style
+    gsap.set(el, { xPercent: -50, yPercent: -50, x: -200, y: -200 });
 
     const setX = gsap.quickTo(el, "x", { duration: 0.45, ease: "power3.out" });
     const setY = gsap.quickTo(el, "y", { duration: 0.45, ease: "power3.out" });
@@ -42,17 +47,17 @@ export default function CustomCursor() {
   return (
     <div
       ref={cursorRef}
+      className="hidden [@media(pointer:fine)]:block"
       style={{
         position: "fixed",
-        top: -9,
-        left: -9,
+        top: 0,
+        left: 0,
         width: 18,
         height: 18,
         borderRadius: "50%",
         background: "var(--color-cursor)",
         pointerEvents: "none",
         zIndex: 9999,
-        transform: "translate(-50%, -50%)",
         willChange: "transform",
         mixBlendMode: "difference",
       }}
