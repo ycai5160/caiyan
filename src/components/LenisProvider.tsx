@@ -22,7 +22,13 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
+    // Recalculate scroll limit whenever page height changes —
+    // catches font-display:swap reflows and lazy image loads
+    const ro = new ResizeObserver(() => lenis.resize());
+    ro.observe(document.body);
+
     return () => {
+      ro.disconnect();
       lenis.destroy();
       lenisRef.current = null;
       gsap.ticker.remove(tick);
@@ -33,7 +39,7 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     lenisRef.current?.scrollTo(0, { immediate: true });
     // Recalculate scroll dimensions after new page content is laid out
-    const id = setTimeout(() => lenisRef.current?.resize(), 50);
+    const id = setTimeout(() => lenisRef.current?.resize(), 150);
     return () => clearTimeout(id);
   }, [pathname]);
 
