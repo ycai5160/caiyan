@@ -230,8 +230,8 @@ export default function SubflowCaseStudy() {
                   </div>
                   {f.image && (
                     f.animated
-                      ? <img src={f.image as string} alt={f.imageAlt} className="w-full border border-edge mt-4" />
-                      : <Image src={f.image} alt={f.imageAlt} className="w-full border border-edge mt-4" width={1920} height={1080} style={{ width: "100%", height: "auto" }} />
+                      ? <img src={f.image as string} alt={f.imageAlt} loading="lazy" decoding="async" className="w-full border border-edge mt-4" />
+                      : <Image src={f.image} alt={f.imageAlt} className="w-full border border-edge mt-4" width={1920} height={1080} sizes="(max-width: 767px) calc(100vw - 48px), 680px" style={{ width: "100%", height: "auto" }} />
                   )}
                 </div>
               ))}
@@ -388,6 +388,7 @@ export default function SubflowCaseStudy() {
                         className="w-full border border-edge mt-2"
                         width={1920}
                         height={1080}
+                        sizes="(max-width: 767px) calc(100vw - 48px), 680px"
                         style={{ width: "100%", height: "auto" }}
                       />
                     )}

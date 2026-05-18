@@ -21,26 +21,17 @@ export default function CustomCursor() {
     const onMove = (e: MouseEvent) => {
       setX(e.clientX);
       setY(e.clientY);
-    };
 
-    const onEnter = () => gsap.to(el, { scale: 2, duration: 0.3, ease: "power2.out" });
-    const onLeave = () => gsap.to(el, { scale: 1, duration: 0.3, ease: "power2.out" });
+      // Works across route changes — no stale element refs
+      const hit = document.elementFromPoint(e.clientX, e.clientY);
+      const over = !!(hit?.closest("a, button, [role='button']"));
+      gsap.to(el, { scale: over ? 2 : 1, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+    };
 
     window.addEventListener("mousemove", onMove);
 
-    // Scale up on interactive elements
-    const targets = document.querySelectorAll("a, button, [role='button']");
-    targets.forEach((t) => {
-      t.addEventListener("mouseenter", onEnter);
-      t.addEventListener("mouseleave", onLeave);
-    });
-
     return () => {
       window.removeEventListener("mousemove", onMove);
-      targets.forEach((t) => {
-        t.removeEventListener("mouseenter", onEnter);
-        t.removeEventListener("mouseleave", onLeave);
-      });
     };
   }, []);
 

@@ -1,23 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function ReadingProgress() {
-  const [pct, setPct] = useState(0);
+  const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const bar = barRef.current;
+    if (!bar) return;
+
     const onScroll = () => {
       const el = document.documentElement;
       const scrolled = el.scrollTop || document.body.scrollTop;
       const max = el.scrollHeight - el.clientHeight;
-      setPct(max > 0 ? (scrolled / max) * 100 : 0);
+      bar.style.transform = `scaleX(${max > 0 ? scrolled / max : 0})`;
     };
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <div
+      ref={barRef}
       aria-hidden
       style={{
         position: "fixed",
@@ -27,11 +32,10 @@ export default function ReadingProgress() {
         height: "2px",
         background: "var(--color-accent)",
         transformOrigin: "left",
-        transform: `scaleX(${pct / 100})`,
+        transform: "scaleX(0)",
         zIndex: 9999,
         pointerEvents: "none",
         willChange: "transform",
-        transition: "transform 80ms linear",
       }}
     />
   );
