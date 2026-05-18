@@ -88,6 +88,11 @@ export default function MermaidChart() {
           .cluster rect { fill: #000000 !important; }
         `;
         svgEl.prepend(style);
+
+        // Notify Lenis that page height changed — fire after browser layout
+        requestAnimationFrame(() =>
+          window.dispatchEvent(new CustomEvent("lenis:resize"))
+        );
       }).catch(console.error);
     });
 
