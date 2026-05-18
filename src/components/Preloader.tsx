@@ -14,9 +14,14 @@ export default function Preloader() {
     const overlay = overlayRef.current;
     if (!overlay) return;
 
-    document.body.style.overflow = "hidden";
+    // Skip on return visits — overlay stays hidden, hero fires immediately
+    if (sessionStorage.getItem("preloader_done")) {
+      overlay.style.display = "none";
+      window.dispatchEvent(new CustomEvent("preloader:done"));
+      return;
+    }
 
-    // Center clip wrappers — GSAP owns transform so y composes correctly
+    // Clip wrappers — GSAP owns transform so y composes correctly
     gsap.set(clipRefs.current, { xPercent: -50, yPercent: -50 });
     // Confirm starting position (matches the inline CSS, prevents any drift)
     gsap.set(wordRefs.current, { y: 50 });
@@ -29,6 +34,9 @@ export default function Preloader() {
           duration: 0.85,
           ease: "power4.inOut",
           onStart() {
+            // Release interaction immediately when curtain begins rising —
+            // overlay is moving off-screen so clicks pass through below it
+            overlay.style.pointerEvents = "none";
             // Fire hero entrance while curtain is still rising
             gsap.delayedCall(0.2, () =>
               window.dispatchEvent(new CustomEvent("preloader:done"))
@@ -36,7 +44,7 @@ export default function Preloader() {
           },
           onComplete() {
             overlay.style.display = "none";
-            document.body.style.overflow = "";
+            sessionStorage.setItem("preloader_done", "1");
           },
         });
       },
