@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import ReadingProgress from "@/components/ReadingProgress";
 
 const promptImg = "/Prompt.png";
 const safezoneImg = "/overview-safezone.png";
@@ -129,7 +128,6 @@ const phases = [
 export default function SubflowCaseStudy() {
   return (
     <main className="bg-bg text-fg min-h-screen" style={{ fontFamily: sc }}>
-      <ReadingProgress />
 
       {/* ── Sticky nav ── */}
       <nav className="sticky top-0 z-50 border-b border-edge bg-bg/90 backdrop-blur-md">
