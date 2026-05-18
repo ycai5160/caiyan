@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { gsap } from "gsap";
@@ -8,39 +8,37 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Pages that use native scroll (dynamic async content breaks Lenis height calculation)
+const NATIVE_SCROLL = ["/work/subflow"];
+
 export default function LenisProvider({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<Lenis | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
-    const lenis = new Lenis();
-    lenisRef.current = lenis;
+    if (NATIVE_SCROLL.includes(pathname)) {
+      window.scrollTo(0, 0);
+      return;
+    }
 
+    const lenis = new Lenis();
     lenis.on("scroll", ScrollTrigger.update);
 
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
-    // Recalculate scroll limit whenever page height changes —
-    // catches font-display:swap reflows and lazy image loads
     const ro = new ResizeObserver(() => lenis.resize());
     ro.observe(document.body);
 
+    lenis.scrollTo(0, { immediate: true });
+    const id = setTimeout(() => lenis.resize(), 150);
+
     return () => {
+      clearTimeout(id);
       ro.disconnect();
       lenis.destroy();
-      lenisRef.current = null;
       gsap.ticker.remove(tick);
     };
-  }, []);
-
-  // Reset scroll to top on every route change
-  useEffect(() => {
-    lenisRef.current?.scrollTo(0, { immediate: true });
-    // Recalculate scroll dimensions after new page content is laid out
-    const id = setTimeout(() => lenisRef.current?.resize(), 150);
-    return () => clearTimeout(id);
   }, [pathname]);
 
   return <>{children}</>;
