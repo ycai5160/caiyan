@@ -10,13 +10,13 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger);
 
 const metaRows = [
-  { label: "Keywords", value: "视频剪辑 · 内容创作 · AI 工具", flex: false },
+  { label: "Keywords", value: "内容创作 · 短视频 · AI 工具", flex: false },
   { label: "Role",     value: "用户研究 · 产品设计",            flex: false },
   { label: "Scope",    value: "MVP",            flex: false },
   { label: "Year",     value: "2026",                          flex: false },
   {
     label: "Overview",
-    value: `Subflow 是一款专为视频创作者打造的 AI 字幕工具，通过置信度可视化与交互优化解决转录校对痛点。它实现了高精度转录与专业样式控制的深度融合，助力创作者高效完成字幕全链路工作流。`,
+    value: `Subflow 是一款面向视频创作者的 AI 字幕编辑工具。在转录误差不可避免的前提下，通过界面设计降低校对成本,具体策略包括在转录前减少可预见错误，并在编辑阶段协助创作者快速定位待修正区域。`,
     flex: true,
   },
 ];
@@ -120,7 +120,7 @@ export default function UxCaseStudy() {
             className="font-bold text-[clamp(20px,3.5vw,40px)] text-fg tracking-[-0.8px] leading-tight"
             style={{ fontFamily: "var(--font-sf-pro)" }}
           >
-            Subflow／AI 字幕生成与编辑工具
+            Subflow／AI 字幕编辑工具
           </p>
 
           <div className="flex flex-col">
