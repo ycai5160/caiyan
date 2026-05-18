@@ -1,9 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import type { Metadata } from "next";
-
-const MermaidChart = dynamic(() => import("@/components/MermaidChart"), { ssr: false });
+import MermaidChart from "@/components/MermaidChartWrapper";
 
 export const metadata: Metadata = {
   title: "Subflow — UX Case Study",
