@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Analytics } from '@vercel/analytics/next';
 import { Noto_Sans_SC } from "next/font/google";
+import dynamic from "next/dynamic";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
-import CustomCursor from "@/components/CustomCursor";
+
+const CustomCursor = dynamic(() => import("@/components/CustomCursor"), { ssr: false });
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],

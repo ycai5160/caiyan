@@ -18,20 +18,30 @@ export default function CustomCursor() {
     const setX = gsap.quickTo(el, "x", { duration: 0.45, ease: "power3.out" });
     const setY = gsap.quickTo(el, "y", { duration: 0.45, ease: "power3.out" });
 
-    const onMove = (e: MouseEvent) => {
-      setX(e.clientX);
-      setY(e.clientY);
+    let rafId = 0;
+    let pendingX = 0;
+    let pendingY = 0;
 
-      // Works across route changes — no stale element refs
-      const hit = document.elementFromPoint(e.clientX, e.clientY);
-      const over = !!(hit?.closest("a, button, [role='button']"));
-      gsap.to(el, { scale: over ? 2 : 1, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+    const onMove = (e: MouseEvent) => {
+      pendingX = e.clientX;
+      pendingY = e.clientY;
+      setX(pendingX);
+      setY(pendingY);
+
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        const hit = document.elementFromPoint(pendingX, pendingY);
+        const over = !!(hit?.closest("a, button, [role='button']"));
+        gsap.to(el, { scale: over ? 2 : 1, duration: 0.3, ease: "power2.out", overwrite: "auto" });
+      });
     };
 
     window.addEventListener("mousemove", onMove);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   }, []);
 

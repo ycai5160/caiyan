@@ -126,6 +126,8 @@ export default function HeroSection() {
         start: "top top",
         end: `+=${vh * 0.65}`,
         scrub: true,
+        onLeave: () => { if (sectionRef.current) sectionRef.current.style.pointerEvents = "none"; },
+        onEnterBack: () => { if (sectionRef.current) sectionRef.current.style.pointerEvents = ""; },
       },
     });
 
@@ -310,7 +312,7 @@ export default function HeroSection() {
             </div>
           ))}
           <div className="aspect-video w-full overflow-hidden">
-            <video ref={mobileVideoRef} autoPlay muted loop playsInline preload="metadata" poster="/video/fallback_img.jpg" className="w-full h-full object-cover">
+            <video ref={mobileVideoRef} autoPlay muted loop playsInline preload="none" poster="/video/fallback_img.jpg" className="w-full h-full object-cover">
               <source src="/video/demo2.mp4" type="video/mp4" />
             </video>
           </div>
