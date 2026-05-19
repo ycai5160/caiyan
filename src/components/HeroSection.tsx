@@ -54,6 +54,23 @@ export default function HeroSection() {
     });
   }, []);
 
+  // Toggle pointer-events directly from scrollY — doesn't depend on
+  // ScrollTrigger/Lenis sync, so clicks on sections below always pass through
+  useEffect(() => {
+    const update = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+      el.style.pointerEvents = window.scrollY > window.innerHeight * 0.5 ? "none" : "";
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
   // Entrance animation — fires on preloader:done (with 4.5s fallback for dev)
   useEffect(() => {
     let fired = false;
@@ -126,8 +143,6 @@ export default function HeroSection() {
         start: "top top",
         end: `+=${vh * 0.65}`,
         scrub: true,
-        onLeave: () => { if (sectionRef.current) sectionRef.current.style.pointerEvents = "none"; },
-        onEnterBack: () => { if (sectionRef.current) sectionRef.current.style.pointerEvents = ""; },
       },
     });
 

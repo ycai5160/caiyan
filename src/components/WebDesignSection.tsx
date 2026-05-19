@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperClass } from "swiper";
 import "swiper/css";
@@ -126,13 +125,13 @@ export default function WebDesignSection() {
               <div className="slide-inner px-4 py-4 md:px-8 md:py-8">
                 <a href={p.url} target="_blank" rel="noopener noreferrer">
                   <div className="aspect-[3/4] relative overflow-hidden">
-                    <Image
+                    <img
                       src={p.thumbnail}
                       alt={p.title}
-                      fill
-                      className="object-cover"
-                      sizes="min(70vw, 540px)"
-                      priority={i < 3}
+                      loading={i < 3 ? "eager" : "lazy"}
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover"
+                      draggable={false}
                     />
                   </div>
                 </a>
