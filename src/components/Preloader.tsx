@@ -73,7 +73,7 @@ export default function Preloader() {
   return (
     <div
       ref={overlayRef}
-      style={{ position: "fixed", inset: 0, zIndex: 9998, background: "#000" }}
+      style={{ position: "fixed", inset: 0, zIndex: 9998, background: "#000", pointerEvents: "none" }}
     >
       {words.map((word, wi) => (
         <div
