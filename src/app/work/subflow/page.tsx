@@ -324,6 +324,8 @@ export default function SubflowCaseStudy() {
                       <img
                         src={d.image}
                         alt={d.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full rounded-lg"
                         style={{ border: "1px solid var(--color-edge)" }}
                       />

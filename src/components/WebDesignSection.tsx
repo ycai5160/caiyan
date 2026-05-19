@@ -121,39 +121,24 @@ export default function WebDesignSection() {
           onSlideChange={(s) => setRealIndex(s.realIndex)}
           className="web-carousel w-full"
         >
-          {projects.map((p, i) => {
-            const isActive = i === realIndex % projects.length;
-            return (
-              <SwiperSlide key={p.slug}>
-                <div className="slide-inner px-4 py-4 md:px-8 md:py-8">
+          {projects.map((p, i) => (
+            <SwiperSlide key={p.slug}>
+              <div className="slide-inner px-4 py-4 md:px-8 md:py-8">
+                <a href={p.url} target="_blank" rel="noopener noreferrer">
                   <div className="aspect-[3/4] relative overflow-hidden">
-                    {isActive ? (
-                      <a href={p.url} target="_blank" rel="noopener noreferrer">
-                        <Image
-                          src={p.thumbnail}
-                          alt={p.title}
-                          fill
-                          className="object-cover"
-                          sizes="min(70vw, 540px)"
-                          priority={i === 0}
-                          loading={i === 0 ? undefined : "eager"}
-                        />
-                      </a>
-                    ) : (
-                      <Image
-                        src={p.thumbnail}
-                        alt={p.title}
-                        fill
-                        className="object-cover"
-                        sizes="min(70vw, 540px)"
-                        loading="eager"
-                      />
-                    )}
+                    <Image
+                      src={p.thumbnail}
+                      alt={p.title}
+                      fill
+                      className="object-cover"
+                      sizes="min(70vw, 540px)"
+                      priority={i < 3}
+                    />
                   </div>
-                </div>
-              </SwiperSlide>
-            );
-          })}
+                </a>
+              </div>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
 
