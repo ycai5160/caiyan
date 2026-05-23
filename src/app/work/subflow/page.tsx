@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import MermaidChart from "@/components/MermaidChartWrapper";
+import LazyVideo from "@/components/LazyVideo";
 
 export const metadata: Metadata = {
   title: "Subflow — UX Case Study",
@@ -24,7 +25,7 @@ const features = [
   {
     tag: "AI 置信度可视化",
     desc: "将模型的不确定性直接呈现在转录稿中，引导创作者精准定位需要核查的区域，免去逐行扫描的负担。",
-    image: "/confidence.gif",
+    image: "/confidence.mp4",
     imageAlt: "AI 置信度可视化界面",
     animated: true,
   },
@@ -54,7 +55,7 @@ const decisions = [
   {
     id: "01",
     title: "转录提示词",
-    image: "/prompt.gif",
+    image: "/prompt.mp4",
     paragraphs: [
       "AI 转录在处理垂直术语、嘉宾名字、网络用语和文化背景词等特定领域词汇时，失败率最高。由于模型在处理前对视频内容一无所知，每一次识别失败都会直接增加下游的校对工作量。",
       "为此，在配置阶段增加了自由文本输入框，允许创作者在转录开始前以自然语言描述视频内容。选择自然语言而非词汇列表，是因为它能同时传递场景、讲者和词汇语境，无需创作者提前预判哪些词汇可能出错。输入框底部设有语言、讲者、术语表三个快捷项，作为结构化的补充输入。自然语言负责处理场景级的上下文，而快捷标签则用于处理明确指定的参数。",
@@ -64,7 +65,7 @@ const decisions = [
   {
     id: "02",
     title: "AI 置信度可视化",
-    image: "/confidence.gif",
+    image: "/confidence.mp4",
     paragraphs: [
       "即便引入了上游的上下文输入，AI 转录也无法保证完全准确，而创作者往往习惯于逐行检查所有内容。因此，设计机会在于帮助用户在校对过程中合理分配注意力，而非彻底消除校对环节。",
       "AI 会为每个转录词汇生成置信度分数，用以衡量识别结果的确定程度。低于设定阈值的词汇会在视觉上通过高亮和下划线进行标记，提示用户重点核查。此举旨在将用户的注意力从均等扫描引导至真正需要人工判断的区域。",
@@ -75,7 +76,7 @@ const decisions = [
   {
     id: "03",
     title: "时间码与讲者编辑",
-    image: "/timecode.gif",
+    image: "/timecode.mp4",
     paragraphs: [
       "调研显示，时间轴调整是耗时最长的单一步骤。传统的时间轴拖拽依赖视觉估算，用户需要寻找字幕块、拖拽至大概位置、预览并反复微调，多次循环累积了较高的时间成本。",
       "本设计将对轴流程拆分为两个明确的操作步骤：利用双柄滑块锁定大致范围，对应字幕的持续时长；利用微调按钮以 0.1 秒为单位进行精准控制。将模糊的估算替换为高控制感的两步操作，从而减少反复预览的次数。",
@@ -85,7 +86,7 @@ const decisions = [
   {
     id: "04",
     title: "安全区预览",
-    image: "/safezone.gif",
+    image: "/safezone.mp4",
     paragraphs: [
       "主流短视频平台通常会在画面的固定区域叠加界面元素，如按钮、操作手柄和平台自带字幕。如果字幕落在这些区域，发布后就会被遮挡，而这一问题在传统的编辑阶段是不可见的。",
       "为此，视频预览区内置了安全区叠加层。开启后，界面会以遮罩形式标示各个平台的界面覆盖范围，使潜在的视觉冲突在导出前清晰可见。创作者可以根据目标发布平台自由切换安全区，直接在预览中判断是否需要调整字幕位置，无需增加额外的操作步骤。",
@@ -138,7 +139,7 @@ export default function SubflowCaseStudy() {
             ← Work
           </Link>
           <span className="text-muted text-[12px] tracking-wide" style={{ fontFamily: sf }}>
-            约 12 分钟
+            约 5 分钟
           </span>
         </div>
       </nav>
@@ -210,7 +211,7 @@ export default function SubflowCaseStudy() {
                   </div>
                   {f.image && (
                     f.animated
-                      ? <img src={f.image} alt={f.imageAlt} loading="lazy" decoding="async" className="w-full border border-edge mt-4" />
+                      ? <LazyVideo src={f.image} className="w-full border border-edge mt-4" />
                       : <Image src={f.image} alt={f.imageAlt} className="w-full border border-edge mt-4" width={1920} height={1080} sizes="(max-width: 767px) calc(100vw - 48px), 680px" style={{ width: "100%", height: "auto" }} />
                   )}
                 </div>
@@ -221,10 +222,10 @@ export default function SubflowCaseStudy() {
           {/* 问题背景 */}
           <Section label="问题背景">
             <p className="body-p">
-              新媒体平台的高频更新节奏对内容生产效率提出了持续挑战。为了跟上更新频率，创作者需要压缩整个制作流程的周期，字幕制作也是其中关键的一环。
+            随着短视频平台内容更新节奏持续加快，AI 转录已经显著缩短了字幕生成所需的时间。当前市场上的工具能够完成自动转录、讲者识别、动态字幕与模板化包装等能力。
             </p>
             <p className="body-p">
-              虽然 AI 转录加快了文稿生成的初速度，但对创作者而言，理想的字幕工具应当贯穿完整流程。这包括准确识别视频中的专有词汇、精准对轴以及控制句子长度以避免文本溢出。对于短视频和综艺创作者，还需要为特定字幕添加视觉效果。在这些精细化需求方面，现有的 AI 转录工具仍有较大的提升空间。
+            但对创作者而言，字幕制作并不只是"生成文字"。在实际工作流中，专有词汇、时间码调整、多讲者区分、平台遮挡与字幕样式等后续编辑问题依然存在。因此，我开始关注：当 AI 已经提升了生成效率后，字幕工作流中还存在哪些影响编辑体验的问题。
             </p>
           </Section>
 
@@ -241,10 +242,10 @@ export default function SubflowCaseStudy() {
 
             <SubSection title="用户研究">
               <p className="body-p">
-                通过对 9 位视频创作者进行开放式问卷调研，并要求受访者逐步还原上一次字幕制作的完整过程，结果显示校对环节占据了总制作时间的 30% 到 50%。
+                通过对 9 位视频创作者进行访谈，并要求受访者逐步还原上一次字幕制作的完整过程，结果显示校对环节占据了总制作时间的 30% 到 50%。
               </p>
               <p className="body-p">
-                受访者的描述揭示了具体的痛点。部分受访者表示，理想中的工具应当能够自动标注出可能有误的位置，而不是由人工逐行排查。同时，AI 经常无法识别特定视频内容中的网络词汇和文化背景词，且在后续的视频制作中会重复出现相同的错误。在提及最耗时的步骤时，多位受访者均指向了时间轴调整，主要原因在于需要反复聆听音频以对齐时间，这一过程消耗了大量时间。
+              受访者的描述中有几个反复出现的问题：AI 容易错误识别网络词汇与文化背景词，且相同词汇会在不同视频中重复出错；时间码调整是最耗时的单一步骤，主因是需要反复聆听音频对齐。多位受访者明确提到，理想中的工具应该能够主动标记可能存在问题的位置，而不是依赖人工逐句排查。
               </p>
             </SubSection>
 
@@ -265,13 +266,9 @@ export default function SubflowCaseStudy() {
               <strong className="text-fg font-bold">下游层面，用户缺乏反馈信号。</strong>在编辑阶段，创作者无法判断问题具体出在哪里，因此不得不对每一行文本投入相同的注意力，造成了精力浪费。此外，用户的操作也分散在不同的面板之间，例如时间码、讲者信息和样式调整分别位于不同区域。
             </p>
             <p className="body-p">
-              初步研究将问题界定为字幕校对耗时较长。进一步分析表明，核心问题不在于 AI 准确率的绝对上限，而在于用户需要全面检查所有输出内容。即便转录整体准确率较高，由于界面未能提供 AI 识别置信度的相关提示，创作者仍需逐行排查。因此，虽然生成成本有所下降，但验证成本依然较高。
+              初步研究将问题界定为字幕校对耗时较长。进一步分析表明，核心问题问题不仅仅在于 AI 的准确率上限，而在于整个工作流缺少针对"错误产生前"与"错误验证时"的有效干预机制。
             </p>
-            <div className="bg-surface px-8 py-10">
-              <p className="text-fg text-[18px] md:text-[20px] leading-[1.65] tracking-[-0.4px]">
-                如何通过界面设计，帮助创作者更高效地处理 AI 转录输出中不可避免的误差？
-              </p>
-            </div>
+            
           </Section>
 
           {/* 设计原则 */}
@@ -321,11 +318,8 @@ export default function SubflowCaseStudy() {
                   </div>
                   {d.image && (
                     <div className="mt-6 pb-10 md:pb-12">
-                      <img
+                      <LazyVideo
                         src={d.image}
-                        alt={d.title}
-                        loading="lazy"
-                        decoding="async"
                         className="w-full rounded-lg"
                         style={{ border: "1px solid var(--color-edge)" }}
                       />
@@ -336,48 +330,7 @@ export default function SubflowCaseStudy() {
             </div>
           </Section>
 
-          {/* 设计呈现 */}
-          <Section label="设计呈现">
-            <p className="body-p">
-              Subflow 的核心结构由两个主要区域组成：用于管理项目的项目主页，以及进行核心编辑的项目空间。在项目内部，编辑器采用了统一的单屏工作界面。AI 审阅、安全区预览和样式控制均集成在此界面中，而非相互独立的视图。
-            </p>
-            <p className="body-p">
-              项目内的操作流程呈现线性结构，分为配置、编辑和导出三个阶段。决策在配置阶段前置完成，使编辑器能够完全专注于校对与样式调整。
-            </p>
-
-            <MermaidChart />
-
-            <div className="flex flex-col mt-4">
-              {phases.map((ph, i) => (
-                <div key={ph.label} className="py-8 border-t border-edge">
-                  <div className="flex items-baseline gap-3 mb-5">
-                    <span className="text-muted text-[11px] tabular-nums shrink-0" style={{ fontFamily: sf }}>
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <h3 className="text-fg text-[15px] font-bold tracking-[-0.3px]" style={{ fontFamily: sf }}>
-                      {ph.label}
-                    </h3>
-                  </div>
-                  <div className="flex flex-col gap-4">
-                    {ph.paragraphs.map((p, j) => (
-                      <p key={j} className="body-p">{p}</p>
-                    ))}
-                    {ph.image && (
-                      <Image
-                        src={ph.image}
-                        alt={ph.imageAlt}
-                        className="w-full border border-edge mt-2"
-                        width={1920}
-                        height={1080}
-                        sizes="(max-width: 767px) calc(100vw - 48px), 680px"
-                        style={{ width: "100%", height: "auto" }}
-                      />
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Section>
+        
 
           {/* 回顾与反思 */}
           <Section label="回顾与反思">
