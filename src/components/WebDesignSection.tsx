@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 const LABEL = "Web Design";
 
 const projects = [
-  { slug: "sopu",        title: "Solara Processing Unit", subtitle: "为去中心化 GPU 算力平台打造的品牌官网，科技感视觉语言配合动态背景，传达产品的效率与未来感。", thumbnail: "/thumbnail_sopu.webp",       url: "https://designer789.github.io/SoPU/" },
+  { slug: "sopu",        title: "Solara Processing Unit", subtitle: "去中心化 GPU 算力租赁平台官网，科技感视觉语言配合产品界面，传达产品的效率与信任感。", thumbnail: "/thumbnail_sopu.webp",       url: "https://ycai5160.github.io/Sopu_backup/" },
   { slug: "sonicai",     title: "Sonic AI",               subtitle: "Solana 上首个个性化 DeFAI 代理平台，官网以高对比度视觉突出产品的速度感与自动化特性。", thumbnail: "/thumbnail_sonicai.webp",    url: "https://designer789.github.io/Sonic-AI/" },
   { slug: "pulse",       title: "Pulse",                  subtitle: "公平代币发行 DEX 的官网设计，以动感视觉节奏呼应产品「Launch. Curve. Soar.」的品牌调性。", thumbnail: "/thumbnail_pulse.webp",      url: "https://designer789.github.io/Pulse/" },
   { slug: "infolaunch",  title: "Info.Launch",            subtitle: "为 AI 项目代币发行平台设计的官网，以简洁的信息层级呈现复杂的 DeFi 机制。", thumbnail: "/thumbnail_infolaunch.webp", url: "https://infolaunch.netlify.app/" },
