@@ -489,7 +489,7 @@ function ProblemStructure() {
   const edge = "var(--color-edge)";
   const muted = "var(--color-muted)";
 
-  const stages = ["配置", "转录", "校对", "导出"];
+  const stages = ["上传", "转录", "校对", "导出"];
   const boxW = 130;
   const boxH = 48;
   const startX = 30;
