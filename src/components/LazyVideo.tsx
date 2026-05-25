@@ -4,11 +4,12 @@ import { useEffect, useRef, type CSSProperties } from "react";
 
 type Props = {
   src: string;
+  poster?: string;
   className?: string;
   style?: CSSProperties;
 };
 
-export default function LazyVideo({ src, className, style }: Props) {
+export default function LazyVideo({ src, poster, className, style }: Props) {
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export default function LazyVideo({ src, className, style }: Props) {
     <video
       ref={ref}
       src={src}
+      poster={poster}
       muted
       loop
       playsInline

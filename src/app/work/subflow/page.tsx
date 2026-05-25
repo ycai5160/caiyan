@@ -165,6 +165,14 @@ export default function SubflowCaseStudy() {
             <p className="body-p">
               Subflow 是一款人工智能驱动的字幕编辑工具，旨在减轻 AI 转录后的人工校对负担。通过上下文输入与置信度可视化，帮助创作者更高效地处理 AI 输出结果。
             </p>
+            <div className="mt-6">
+              <LazyVideo
+                src="/demo.webm"
+                poster="/demo-poster.webp"
+                className="w-full rounded-lg"
+                style={{ border: "1px solid var(--color-edge)" }}
+              />
+            </div>
           </Section>
 
           {/* 问题背景 */}
