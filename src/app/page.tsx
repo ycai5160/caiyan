@@ -1,15 +1,13 @@
-import HeroSection from "@/components/HeroSection";
-import WebDesignSection from "@/components/WebDesignSection";
+import Nav from "@/components/Nav";
 import UxCaseStudy from "@/components/UxCaseStudy";
+import WebDesignSection from "@/components/WebDesignSection";
 import SkillSection from "@/components/SkillSection";
 import Footer from "@/components/Footer";
-import Preloader from "@/components/Preloader";
 
 export default function Home() {
   return (
-    <main>
-      <Preloader />
-      <HeroSection />
+    <main id="top">
+      <Nav />
       <UxCaseStudy />
       <WebDesignSection />
       <SkillSection />

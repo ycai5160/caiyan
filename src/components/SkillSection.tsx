@@ -1,107 +1,135 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 import { gsap } from "gsap";
-import StaggerLink, { type StaggerLinkHandle } from "./StaggerLink";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import DefineFrame from "./DefineFrame";
+import DesignFrame from "./DesignFrame";
+import DevelopFrame from "./DevelopFrame";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const skills = [
-  { heading: "Discover", tags: ["User research", "Usability Testing", "Journey Mapping"] },
-  { heading: "Design",   tags: ["Figma", "Webflow", "After Effects", "Illustrator", "Protopie"] },
-  { heading: "Develop",  tags: ["Claude Code", "Cursor", "HTML&CSS", "Next.js"] },
-];
+type Card = {
+  label: string;
+  title: string;
+  image?: string;
+  visual?: React.ReactNode;
+};
 
-const LABEL = "What I do";
+const cards: Card[] = [
+  { label: "RESEARCH",       title: "用户研究与问题定义",          visual: <DefineFrame /> },
+  { label: "DESIGN",         title: "产品流程与界面设计",          visual: <DesignFrame /> },
+  { label: "AI PROTOTYPING", title: "AI 驱动高保真交互原型搭建", visual: <DevelopFrame /> },
+];
 
 export default function SkillSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const labelChars = useRef<HTMLSpanElement[]>([]);
-  const accentRef  = useRef<HTMLParagraphElement>(null);
-  const rowsRef      = useRef<HTMLDivElement[]>([]);
-  const staggerRefs  = useRef<(StaggerLinkHandle | null)[]>([]);
 
-  useGSAP(() => {
-    if (!sectionRef.current) return;
-
-    const chars = labelChars.current;
-    const rows  = rowsRef.current;
-
-    gsap.set(chars, { y: "115%" });
-    gsap.set(accentRef.current, { y: 16, opacity: 0 });
-    gsap.set(rows,  { y: 24, opacity: 0 });
-
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        once: true,
-      },
-    })
-      .to(chars, { y: 0, stagger: 0.04, duration: 0.7, ease: "power3.out" }, 0)
-      .to(accentRef.current, { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" }, 0.1)
-      .to(rows, { y: 0, opacity: 1, stagger: 0.1, duration: 0.7, ease: "power2.out" }, 0.2);
-  }, { scope: sectionRef });
-
-  labelChars.current   = [];
-  rowsRef.current      = [];
-  staggerRefs.current  = [];
+  useGSAP(
+    () => {
+      gsap.from("[data-core-fade]", {
+        y: 16,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.05,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 82%",
+          once: true,
+        },
+      });
+      gsap.from("[data-core-card]", {
+        y: 24,
+        opacity: 0,
+        duration: 0.7,
+        ease: "power3.out",
+        stagger: 0.08,
+        scrollTrigger: {
+          trigger: "[data-core-grid]",
+          start: "top 85%",
+          once: true,
+        },
+      });
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
       ref={sectionRef}
       id="skills"
-      className="relative w-full flex flex-col py-16 md:py-32 bg-bg"
+      className="container-x"
+      style={{
+        paddingTop: "var(--space-section-md)",
+        paddingBottom: "var(--space-section-lg)",
+      }}
     >
-     
+      <div className="flex flex-col items-center">
+        {/* Section thesis — centered */}
+        <h2
+          data-core-fade
+          className="text-fg text-[28px] md:text-[40px] font-semibold tracking-[-0.03em] leading-[1.2] text-center"
+        >
+          从产品思考到AI交互原型
+        </h2>
 
-      {/* Rows */}
-      <div className="px-6 md:px-10 lg:px-16">
-        {skills.map((skill, i) => (
-          <div
-            key={skill.heading}
-            ref={(el) => { if (el) rowsRef.current.push(el); }}
-            className="group relative flex flex-col gap-3 py-4 md:flex-row md:items-end md:justify-between md:py-3"
-            onMouseEnter={() => staggerRefs.current[i]?.enter()}
-            onMouseLeave={() => staggerRefs.current[i]?.leave()}
-          >
-            {/* base divider */}
-            <span className="absolute bottom-0 left-0 w-full h-px bg-edge" aria-hidden="true" />
-            {/* fill sweep */}
-            <span
-              className="absolute bottom-0 left-0 w-full h-px bg-fg/25 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500"
-              style={{ transitionTimingFunction: "cubic-bezier(0.25,1,0.5,1)" }}
-              aria-hidden="true"
-            />
-
-            <p
-              className="font-bold leading-[1.1] text-muted group-hover:text-white tracking-[-0.02em] text-[clamp(52px,8vw,96px)] transition-colors duration-300"
-              style={{ fontFamily: "var(--font-sf-pro)" }}
-            >
-              <StaggerLink
-                ref={(el) => { staggerRefs.current[i] = el; }}
-                style={{ fontFamily: "var(--font-sf-pro)" }}
-                disableSelfHover
-              >
-                {skill.heading}
-              </StaggerLink>
-            </p>
-            <div className="flex flex-wrap gap-2 items-start md:pb-2 md:justify-end md:max-w-[50%]">
-              {skill.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-[6px] py-1 rounded-full border border-edge-md text-muted text-[12px] md:text-[13px] tracking-[-0.02em] whitespace-nowrap transition-colors duration-300 group-hover:text-fg group-hover:border-fg/30"
-                  style={{ fontFamily: "var(--font-sf-pro)" }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
+        {/* 3 equal horizontal cards — centered, capped on ultrawide screens */}
+        <div
+          data-core-grid
+          className="grid grid-cols-1 md:grid-cols-3 mt-14 md:mt-20 w-full max-w-[1180px]"
+          style={{ gap: "var(--space-bento-gap)" }}
+        >
+          <BentoCard data={cards[0]} />
+          <BentoCard data={cards[1]} />
+          <BentoCard data={cards[2]} />
+        </div>
       </div>
     </section>
+  );
+}
+
+function BentoCard({
+  data,
+  className = "",
+}: {
+  data: Card;
+  className?: string;
+}) {
+  return (
+    <div
+      data-core-card
+      className={`shadow-window relative flex flex-col rounded-md bg-surface min-h-[320px] ${className}`}
+    >
+      {/* Top band — English eyebrow over Chinese title (clear hierarchy) */}
+      <div className="flex flex-col gap-1 px-5 py-4 md:px-6 md:py-5">
+        <span
+          className="text-muted text-[11px] md:text-[12px] tracking-[0.08em] uppercase"
+        >
+          {data.label}
+        </span>
+        <span
+          className="text-fg text-[16px] md:text-[18px] font-semibold tracking-[-0.01em] leading-[1.3]"
+        >
+          {data.title}
+        </span>
+      </div>
+
+      {/* Visual area — padding lives here so all three frames share it */}
+      <div className="relative flex-1 p-6 pb-12 md:p-8 md:pb-16">
+        {data.visual ??
+          (data.image && (
+            <Image
+              src={data.image}
+              alt={data.title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 30vw, 22vw"
+              className="object-cover"
+            />
+          ))}
+      </div>
+    </div>
   );
 }

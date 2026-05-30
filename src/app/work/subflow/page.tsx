@@ -1,15 +1,19 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import MermaidChart from "@/components/MermaidChartWrapper";
 import LazyVideo from "@/components/LazyVideo";
+import CaseSideNav from "@/components/CaseSideNav";
+
+const sectionItems = [
+  { id: "overview",   label: "概述" },
+  { id: "research",   label: "研究" },
+  { id: "design",     label: "设计" },
+  { id: "reflection", label: "反思" },
+];
 
 export const metadata: Metadata = {
   title: "Subflow — UX Case Study",
   description: "Subflow：面向视频创作者的 AI 字幕编辑工具。用户研究、产品设计与 MVP 交付全过程。",
 };
-
-const sf = "var(--font-sf-pro)";
-const sc = "var(--font-siyuan)";
 
 /* ── Data ─────────────────────────────────────────────── */
 
@@ -98,21 +102,16 @@ const phases = [
 
 export default function SubflowCaseStudy() {
   return (
-    <main className="bg-bg text-fg min-h-screen" style={{ fontFamily: sc }}>
+    <main className="bg-bg text-fg min-h-screen">
+      <CaseSideNav items={sectionItems} />
 
       {/* ── Sticky nav ── */}
-      <nav className="sticky top-0 z-50 border-b border-edge bg-bg/90 backdrop-blur-md">
+      <nav className="sticky top-0 z-50 border-b border-edge bg-bg/80 backdrop-blur-md">
         <div className="max-w-[680px] mx-auto px-6 md:px-0 h-[52px] flex items-center justify-between">
-          <Link
-            href="/#ux"
-            className="text-muted text-[13px] hover:text-fg transition-colors duration-200"
-            style={{ fontFamily: sf }}
-          >
+          <Link href="/#ux" className="text-muted text-[13px]">
             ← Work
           </Link>
-          <span className="text-muted text-[12px] tracking-wide" style={{ fontFamily: sf }}>
-            约 5 分钟
-          </span>
+          <span className="text-muted text-[12px]">约 5 分钟</span>
         </div>
       </nav>
 
@@ -120,21 +119,19 @@ export default function SubflowCaseStudy() {
 
         {/* ── Header ── */}
         <header className="mb-14 md:mb-18">
-          <p
-            className="text-accent text-[11px] tracking-[0.28em] uppercase mb-5"
-            style={{ fontFamily: sf }}
-          >
+          {/* Article category — quiet eyebrow above title */}
+          <p className="text-muted text-[13px] mb-6">
             UX Design · 个人项目
           </p>
 
           <h1
-            className="font-bold leading-[0.9] tracking-[-0.04em] text-fg mb-5"
-            style={{ fontFamily: sf, fontSize: "clamp(56px, 10vw, 96px)" }}
+            className="font-semibold leading-[1.05] tracking-[-0.03em] text-fg mb-4"
+            style={{ fontSize: "clamp(32px, 5.5vw, 52px)" }}
           >
             Subflow
           </h1>
 
-          <p className="text-secondary text-[19px] leading-[1.7] tracking-[-0.3px] mb-12">
+          <p className="text-secondary text-[16px] md:text-[17px] leading-[1.6] tracking-[-0.1px] mb-12">
             面向视频创作者的 AI 字幕编辑工具
           </p>
 
@@ -145,11 +142,11 @@ export default function SubflowCaseStudy() {
               { label: "工具", value: "Figma · Claude Code" },
               { label: "年份", value: "2026" },
             ].map(({ label, value }) => (
-              <div key={label} className="flex flex-col gap-2">
-                <span className="text-muted text-[10px] tracking-[0.18em] uppercase" style={{ fontFamily: sf }}>
+              <div key={label} className="flex flex-col gap-1.5">
+                <span className="text-muted text-[11px] md:text-[12px]">
                   {label}
                 </span>
-                <span className="text-fg text-[14px] tracking-[-0.2px]" style={{ fontFamily: sf }}>
+                <span className="text-fg text-[14px] tracking-[-0.01em]">
                   {value}
                 </span>
               </div>
@@ -161,7 +158,7 @@ export default function SubflowCaseStudy() {
         <div className="flex flex-col gap-14 md:gap-18">
 
           {/* 项目概述 */}
-          <Section label="项目概述">
+          <Section id="overview" label="项目概述">
             <p className="body-p">
               Subflow 是一款人工智能驱动的字幕编辑工具，旨在减轻 AI 转录后的人工校对负担。通过上下文输入与置信度可视化，帮助创作者更高效地处理 AI 输出结果。
             </p>
@@ -169,14 +166,14 @@ export default function SubflowCaseStudy() {
               <LazyVideo
                 src="/demo.webm"
                 poster="/demo-poster.webp"
-                className="w-full rounded-lg"
+                className="w-full"
                 style={{ border: "1px solid var(--color-edge)" }}
               />
             </div>
           </Section>
 
           {/* 问题背景 */}
-          <Section label="问题背景">
+          <Section id="problem" label="问题背景">
             <p className="body-p">
               随着短视频平台内容更新节奏持续加快，AI 转录已显著缩短字幕生成所需的时间。当前市场的工具已具备自动转录、讲者识别、动态字幕与模板化包装等功能。
             </p>
@@ -186,7 +183,7 @@ export default function SubflowCaseStudy() {
           </Section>
 
           {/* 研究与发现 */}
-          <Section label="研究与发现">
+          <Section id="research" label="研究与发现">
             <SubSection title="竞品分析">
               <p className="body-p">
                 当前市场的相关工具主要分为两类：转录优先型（如 Descript、Otter）与创作者优先型（如 VEED、Submagic、Captions）。前者侧重准确率与文稿处理，视觉样式定制能力有限；后者侧重动态字幕与视觉包装，但转写准确率参差不齐。两类产品分别优化了工作流的不同阶段，但覆盖范围都受限于自身定位。
@@ -206,7 +203,7 @@ export default function SubflowCaseStudy() {
           </Section>
 
           {/* 核心洞察 */}
-          <Section label="核心洞察">
+          <Section id="insight" label="核心洞察">
             <p className="body-p">
               研究后发现，问题主要集中在两个干预点。
             </p>
@@ -222,18 +219,18 @@ export default function SubflowCaseStudy() {
           </Section>
 
           {/* 设计原则 */}
-          <Section label="设计原则">
+          <Section id="principles" label="设计原则">
             <div className="flex flex-col gap-5 pb-5">
             <p className="body-p">
             针对上述洞察，本产品确立了两项核心设计原则：
             </p>
               {principles.map((p) => (
                 <div key={p.id} className="flex gap-5 ">
-                  <span className="shrink-0 text-muted text-[12px] tabular-nums pt-0.5 w-5" style={{ fontFamily: sf }}>
+                  <span className="shrink-0 text-muted text-[12px] tabular-nums pt-0.5 w-5">
                     {p.id}
                   </span>
                   <div className="flex flex-col gap-1">
-                    <span className="text-fg text-[15px] font-bold tracking-[-0.3px]" style={{ fontFamily: sf }}>
+                    <span className="text-fg text-[15px] font-semibold tracking-[-0.01em]">
                       {p.title}
                     </span>
                     {p.desc && (
@@ -249,21 +246,18 @@ export default function SubflowCaseStudy() {
           </Section>
 
           {/* 核心设计 */}
-          <Section label="核心设计">
+          <Section id="design" label="核心设计">
             <div className="flex flex-col">
               {decisions.map((d) => (
                 <div key={d.id} className="pt-10 md:pt-12 border-t border-edge first:border-t-0 first:pt-0">
                   <span
                     aria-hidden="true"
-                    className="block font-bold leading-none select-none mb-3 tracking-[-0.05em]"
-                    style={{ fontFamily: sf, fontSize: "clamp(64px, 10vw, 88px)", color: "var(--color-edge-lg)" }}
+                    className="block font-semibold leading-none select-none mb-3 tracking-[-0.04em]"
+                    style={{ fontSize: "clamp(48px, 8vw, 72px)", color: "var(--color-edge-lg)" }}
                   >
                     {d.id}
                   </span>
-                  <h3
-                    className="text-fg text-[20px] md:text-[22px] font-bold tracking-[-0.5px] leading-tight mb-7"
-                    style={{ fontFamily: sf }}
-                  >
+                  <h3 className="text-fg text-[20px] md:text-[22px] font-semibold tracking-[-0.02em] leading-[1.25] mb-7">
                     {d.title}
                   </h3>
                   <div className="flex flex-col gap-4">
@@ -275,7 +269,7 @@ export default function SubflowCaseStudy() {
                     <div className="mt-6 pb-10 md:pb-12">
                       <LazyVideo
                         src={d.image}
-                        className="w-full rounded-lg"
+                        className="w-full"
                         style={{ border: "1px solid var(--color-edge)" }}
                       />
                     </div>
@@ -288,7 +282,7 @@ export default function SubflowCaseStudy() {
         
 
           {/* 回顾与反思 */}
-          <Section label="回顾与反思">
+          <Section id="reflection" label="回顾与反思">
             <p className="body-p">
               在 AI 产品设计领域，行业常优先关注生成速度、模型准确率与自动化程度。本项目实践表明，在 AI 输出不可避免存在误差的前提下，协助用户对输出结果建立信任与掌控感同样关键。转录提示词与置信度可视化的核心目的并非替代用户决策，而是赋能用户更高效地理解、验证与修正 AI 的输出内容。
             </p>
@@ -309,7 +303,7 @@ export default function SubflowCaseStudy() {
                 ].map((item) => (
                   <div key={item.title} className="flex gap-5 py-5">
                     <div className="flex flex-col gap-1">
-                      <span className="text-fg text-[15px] font-bold tracking-[-0.3px]" style={{ fontFamily: sf }}>
+                      <span className="text-fg text-[15px] font-semibold tracking-[-0.01em]">
                         {item.title}
                       </span>
                       <span className="text-secondary text-[15px] leading-[1.8] tracking-[-0.2px]">
@@ -326,16 +320,10 @@ export default function SubflowCaseStudy() {
 
         {/* ── Footer nav ── */}
         <div className="mt-20 md:mt-24 pt-8 border-t border-edge flex items-center justify-between">
-          <Link
-            href="/#ux"
-            className="text-muted text-[13px] hover:text-fg transition-colors duration-200"
-            style={{ fontFamily: sf }}
-          >
+          <Link href="/#ux" className="text-muted text-[13px]">
             ← Back to Work
           </Link>
-          <span className="text-muted text-[12px] tracking-[0.15em] uppercase" style={{ fontFamily: sf }}>
-            蔡言 · 2026
-          </span>
+          <span className="text-muted text-[12px]">© 2026 蔡言</span>
         </div>
 
       </article>
@@ -345,18 +333,20 @@ export default function SubflowCaseStudy() {
 
 /* ── Layout helpers ────────────────────────────────────── */
 
-function Section({ label, children }: { label: string; children: React.ReactNode }) {
+function Section({
+  id,
+  label,
+  children,
+}: {
+  id?: string;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <section>
-      <div className="flex items-center gap-4 mb-8 md:mb-10">
-        <span
-          className="text-accent text-[10px] tracking-[0.28em] uppercase font-bold shrink-0"
-          style={{ fontFamily: "var(--font-sf-pro)" }}
-        >
-          {label}
-        </span>
-        <div className="flex-1 h-px bg-edge" />
-      </div>
+    <section id={id} className="scroll-mt-24">
+      <h2 className="text-fg text-[22px] md:text-[26px] font-semibold tracking-[-0.02em] leading-[1.25] mb-6 md:mb-8">
+        {label}
+      </h2>
       <div className="flex flex-col gap-5">{children}</div>
     </section>
   );
@@ -364,10 +354,10 @@ function Section({ label, children }: { label: string; children: React.ReactNode
 
 function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-4 pt-8 first:pt-0">
-      <p className="text-muted text-[10px] tracking-[0.22em] uppercase" style={{ fontFamily: "var(--font-sf-pro)" }}>
+    <div className="flex flex-col gap-3 pt-7 first:pt-0">
+      <h3 className="text-fg text-[17px] md:text-[19px] font-semibold tracking-[-0.01em] leading-[1.3]">
         {title}
-      </p>
+      </h3>
       {children}
     </div>
   );
@@ -631,7 +621,7 @@ function ProblemStructure() {
               />
 
               {/* Principle zone (only accent in the diagram) */}
-              <rect x={g.x} y={principleY} width={zoneW} height={zoneH} fill={accent} fillOpacity={0.12} stroke="#a8280680" strokeWidth={1} />
+              <rect x={g.x} y={principleY} width={zoneW} height={zoneH} fill={fg} fillOpacity={0.06} stroke={edge} strokeWidth={1} />
               <text x={zoneCenterX} y={principleY + 30} textAnchor="middle" fontFamily="var(--font-sf-pro)" fontSize="9" letterSpacing="2.5" fontWeight={600} fill={accent}>
                 {g.principleEyebrow}
               </text>

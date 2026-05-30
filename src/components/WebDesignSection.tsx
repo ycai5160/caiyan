@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperClass } from "swiper";
+import { Navigation, Keyboard } from "swiper/modules";
 import "swiper/css";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,228 +11,210 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const LABEL = "Web Design";
-
 const projects = [
-  { slug: "sopu",        title: "Solara Processing Unit", subtitle: "去中心化 GPU 算力租赁平台官网，科技感视觉语言配合产品界面，传达产品的效率与信任感。", thumbnail: "/thumbnail_sopu.webp",       url: "https://ycai5160.github.io/Sopu_backup/" },
-  { slug: "sonicai",     title: "Sonic AI",               subtitle: "Solana 上首个个性化 DeFAI 代理平台，官网以高对比度视觉突出产品的速度感与自动化特性。", thumbnail: "/thumbnail_sonicai.webp",    url: "https://designer789.github.io/Sonic-AI/" },
-  { slug: "pulse",       title: "Pulse",                  subtitle: "公平代币发行 DEX 的官网设计，以动感视觉节奏呼应产品「Launch. Curve. Soar.」的品牌调性。", thumbnail: "/thumbnail_pulse.webp",      url: "https://designer789.github.io/Pulse/" },
-  { slug: "infolaunch",  title: "Info.Launch",            subtitle: "为 AI 项目代币发行平台设计的官网，以简洁的信息层级呈现复杂的 DeFi 机制。", thumbnail: "/thumbnail_infolaunch.webp", url: "https://infolaunch.netlify.app/" },
-  { slug: "privai",      title: "PrivAI",                 subtitle: "融合隐私保护与 AI 自动化的 Web3 平台官网，深色科技风格强化产品的安全感与可信度。", thumbnail: "/thumbnail_privai.webp",     url: "https://privaiagent.netlify.app/" },
-  { slug: "lolforge",    title: "lol.Forge",              subtitle: "AI 驱动的 3D Meme 生成平台，视觉风格大胆夸张，与产品的娱乐属性高度契合。", thumbnail: "/thumbnail_lolforge.webp",   url: "https://lolforge.netlify.app/" },
-  { slug: "ocularai",    title: "OCULARAI",               subtitle: "为 AI 智能眼镜硬件项目打造的品牌落地页，视觉叙事围绕未来感穿戴设备展开。", thumbnail: "/thumbnail_ocularai.webp",   url: "https://ocularai.netlify.app/" },
-  { slug: "rankchain",   title: "RankChain",              subtitle: "链上钱包追踪与评级平台，以数据可视化为核心视觉语言，传达产品的专业与透明。", thumbnail: "/thumbnail_rankchain.webp",  url: "https://rankchain.netlify.app/" },
-  { slug: "metai",       title: "Met.AI",                 subtitle: "去中心化 AI 代理市场的品牌官网，以模块化视觉结构呈现复杂的基础设施产品。", thumbnail: "/thumbnail_metai.webp",      url: "https://met-ai-9742aa.netlify.app//" },
-  { slug: "credhub",     title: "Cred.Hub",               subtitle: "Web3 去中心化信誉协议的品牌官网，以清晰的视觉层级将抽象的信任机制具象化呈现。", thumbnail: "/thumbnail_credhub.webp",    url: "https://credhubprotocol.netlify.app/" },
+  { slug: "sopu",       title: "Solara Processing Unit", thumbnail: "/thumbnail_sopu.webp",       url: "https://ycai5160.github.io/Sopu_backup/" },
+  { slug: "rankchain",  title: "RankChain",              thumbnail: "/thumbnail_rankchain.webp",  url: "https://rankchain.netlify.app/" },
+  { slug: "infolaunch", title: "Info.Launch",            thumbnail: "/thumbnail_infolaunch.webp", url: "https://infolaunch.netlify.app/" },
+  { slug: "sonicai",    title: "Sonic AI",               thumbnail: "/thumbnail_sonicai.webp",    url: "https://designer789.github.io/Sonic-AI/" },
+  { slug: "pulse",      title: "Pulse",                  thumbnail: "/thumbnail_pulse.webp",      url: "https://designer789.github.io/Pulse/" },
+  { slug: "privai",     title: "PrivAI",                 thumbnail: "/thumbnail_privai.webp",     url: "https://privaiagent.netlify.app/" },
+  { slug: "lolforge",   title: "lol.Forge",              thumbnail: "/thumbnail_lolforge.webp",   url: "https://lolforge.netlify.app/" },
+  { slug: "ocularai",   title: "OCULARAI",               thumbnail: "/thumbnail_ocularai.webp",   url: "https://ocularai.netlify.app/" },
+  { slug: "metai",      title: "Met.AI",                 thumbnail: "/thumbnail_metai.webp",      url: "https://met-ai-9742aa.netlify.app//" },
+  { slug: "credhub",    title: "Cred.Hub",               thumbnail: "/thumbnail_credhub.webp",    url: "https://credhubprotocol.netlify.app/" },
 ];
 
-function Crosshair({ className }: { className: string }) {
-  return (
-    <div className={`absolute w-3 h-3 ${className}`} aria-hidden="true">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-        <line x1="6" y1="0"  x2="6" y2="12" stroke="rgba(255,255,255,0.35)" strokeWidth="1" />
-        <line x1="0" y1="6" x2="12"  y2="6" stroke="rgba(255,255,255,0.35)" strokeWidth="1" />
-      </svg>
-    </div>
-  );
-}
+const total = projects.length;
+const totalPadded = String(total).padStart(2, "0");
 
 export default function WebDesignSection() {
-  const [realIndex, setRealIndex] = useState(0);
-  const swiperRef   = useRef<SwiperClass | null>(null);
-  const sectionRef  = useRef<HTMLElement>(null);
-  const labelChars  = useRef<HTMLSpanElement[]>([]);
-  const accentRef   = useRef<HTMLParagraphElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<HTMLDivElement>(null);
-  const active      = projects[realIndex % projects.length];
+  const sectionRef = useRef<HTMLElement>(null);
+  const swiperRef = useRef<SwiperClass | null>(null);
 
-  useGSAP(() => {
-    if (!sectionRef.current) return;
-
-    const chars = labelChars.current;
-    gsap.set(chars, { y: "115%" });
-    gsap.set([accentRef.current, carouselRef.current, controlsRef.current], { y: 20, opacity: 0 });
-
-    gsap.timeline({
-      scrollTrigger: { trigger: sectionRef.current, start: "top 80%", once: true },
-    })
-      .to(chars, { y: 0, stagger: 0.04, duration: 0.7, ease: "power3.out" }, 0)
-      .to(accentRef.current, { y: 0, opacity: 1, duration: 0.7, ease: "power2.out" }, 0.1)
-      .to(carouselRef.current, { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" }, 0.2)
-      .to(controlsRef.current, { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, 0.3);
-  }, { scope: sectionRef });
-
-  labelChars.current = [];
+  useGSAP(
+    () => {
+      gsap.from("[data-web-fade]", {
+        y: 16,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.05,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 82%",
+          once: true,
+        },
+      });
+      gsap.from("[data-web-carousel]", {
+        y: 24,
+        opacity: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: "[data-web-carousel]",
+          start: "top 85%",
+          once: true,
+        },
+      });
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
       ref={sectionRef}
       id="web"
-      className="relative w-full flex flex-col py-16 md:py-32 bg-bg"
+      className="relative"
+      style={{
+        paddingTop: "0",
+        paddingBottom: "var(--space-section-md)",
+      }}
     >
-      {/* Section label */}
-      <div className="flex flex-col gap-1 px-6 md:px-10 lg:px-16 pb-12 md:pb-16">
-        <p
-          className="font-bold leading-[1] text-surface text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
-          style={{ fontFamily: "var(--font-sf-pro)" }}
-        >
-          {[...LABEL].map((char, i) => (
-            <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom" }}>
-              <span
-                ref={(el) => { if (el) labelChars.current.push(el); }}
-                style={{ display: "inline-block" }}
-              >
-                {char === " " ? " " : char}
-              </span>
-            </span>
-          ))}
-        </p>
-        <p
-          ref={accentRef}
-          className="font-bold leading-5 text-accent text-[13px] md:text-[16px] tracking-[0.3rem]"
-          style={{ fontFamily: "var(--font-siyuan)" }}
-        >
-          网页设计项目
-        </p>
-      </div>
+      <div
+        className="container-x grid grid-cols-1 md:grid-cols-12"
+        style={{ columnGap: "var(--space-grid-gutter)", rowGap: "var(--space-stack-lg)" }}
+      >
+        {/* Left: text + arrows */}
+        <div className="md:col-span-5 flex flex-col">
+          {/* Section badge — Notion orange tag */}
+          <span
+            data-web-fade
+            className="self-start inline-flex items-center px-2.5 py-0.5 rounded-full tag-orange text-[12px] font-medium"
+          >
+            02 网页设计
+          </span>
 
-      {/* Carousel + static blueprint grid */}
-      <div ref={carouselRef} className="relative border-t border-b border-edge">
-
-        {/* Blueprint grid — static, sits above carousel */}
-        <div className="absolute inset-0 pointer-events-none z-10 flex items-stretch justify-center">
-          <div className="relative web-grid-col border-l border-r border-fg/10">
-            <Crosshair className="-top-1.5 -left-1.5" />
-            <Crosshair className="-top-1.5 -right-1.5" />
-            <Crosshair className="-bottom-1.5 -left-1.5" />
-            <Crosshair className="-bottom-1.5 -right-1.5" />
-          </div>
-        </div>
-
-
-        <Swiper
-          centeredSlides
-          slidesPerView="auto"
-          spaceBetween={0}
-          loop
-          speed={400}
-          onSwiper={(s) => { swiperRef.current = s; }}
-          onSlideChange={(s) => setRealIndex(s.realIndex)}
-          className="web-carousel w-full"
-        >
-          {projects.map((p, i) => (
-            <SwiperSlide key={p.slug}>
-              <div className="slide-inner px-4 py-4 md:px-8 md:py-8">
-                <a href={p.url} target="_blank" rel="noopener noreferrer">
-                  <div className="aspect-[3/4] relative overflow-hidden">
-                    <img
-                      src={p.thumbnail}
-                      alt={p.title}
-                      loading={i < 3 ? "eager" : "lazy"}
-                      decoding="async"
-                      className="absolute inset-0 w-full h-full object-cover"
-                      draggable={false}
-                    />
-                  </div>
-                </a>
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
-
-      {/* Controls */}
-      <div ref={controlsRef} className="px-6 md:px-10 lg:px-16 pt-5 md:pt-6">
-
-        {/* Mobile: title+subtitle left, icon arrows right */}
-        <div className="flex items-start justify-between gap-4 md:hidden">
-          <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <p
-              className="text-fg text-[14px] font-medium tracking-[-0.02em] leading-tight"
-              style={{ fontFamily: "var(--font-sf-pro)" }}
-            >
-              {active.title}
+          <div
+            data-web-fade
+            className="mt-14 md:mt-20 flex items-baseline justify-between gap-4"
+          >
+            <p className="text-fg text-[18px] md:text-[22px] font-semibold tracking-[-0.02em] leading-[1.25]">
+              AdTactics Marketing International Limited, HongKong
             </p>
-            {active.subtitle && (
-              <p
-                className="text-muted text-[12px] leading-snug line-clamp-2"
-                style={{ fontFamily: "var(--font-siyuan)" }}
-              >
-                {active.subtitle}
-              </p>
-            )}
+            <p className="text-muted text-[12px] md:text-[13px] shrink-0">
+              2023 — 2025
+            </p>
           </div>
-          <div className="hidden">
+
+          <p
+            data-web-fade
+            className="text-secondary text-[14px] md:text-[15px] leading-[1.85] mt-4 md:mt-5 max-w-[58ch]"
+          >
+            针对全球 Web3 客户不同项目需求，完成 Logo、Banner、官网与落地页等品牌视觉与网页设计。
+          </p>
+
+          {/* Bottom-right cluster — just arrows; the index + title live in the active slide overlay */}
+          <div className="mt-auto pt-10 self-end flex items-center gap-2">
             <button
-              onClick={() => swiperRef.current?.slidePrev()}
+              type="button"
               aria-label="Previous project"
-              className="w-8 h-8 flex items-center justify-center border border-edge text-muted hover:border-edge-hover hover:text-fg transition-colors duration-200"
+              onClick={() => swiperRef.current?.slidePrev()}
+              className="grid place-items-center w-9 h-9 rounded-md border border-edge-md text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true" style={{ transform: "rotate(180deg)" }}>
-                <path d="M17 7 7 17" strokeWidth="2" />
-                <path d="m8 7 9 0 0 9" strokeWidth="2" />
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M15 6 9 12l6 6" />
               </svg>
             </button>
             <button
-              onClick={() => swiperRef.current?.slideNext()}
+              type="button"
               aria-label="Next project"
-              className="w-8 h-8 flex items-center justify-center border border-edge text-muted hover:border-edge-hover hover:text-fg transition-colors duration-200"
+              onClick={() => swiperRef.current?.slideNext()}
+              className="grid place-items-center w-9 h-9 rounded-md border border-edge-md text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fg/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true">
-                <path d="M17 7 7 17" strokeWidth="2" />
-                <path d="m8 7 9 0 0 9" strokeWidth="2" />
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M9 6 15 12l-6 6" />
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Desktop: prev | title+subtitle | next */}
-        <div className="hidden md:grid grid-cols-[1fr_2fr_1fr] items-center">
-          <button
-            onClick={() => swiperRef.current?.slidePrev()}
-            aria-label="Previous project"
-            className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-start"
-            style={{ fontFamily: "var(--font-sf-pro)" }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true" style={{ transform: "rotate(180deg)" }}>
-              <path d="M17 7 7 17" strokeWidth="2" />
-              <path d="m8 7 9 0 0 9" strokeWidth="2" />
-            </svg>
-            previous
-          </button>
-
-          <div className="flex flex-col gap-1 items-center text-center">
-            <p
-              className="text-fg text-[15px] font-medium tracking-[-0.28px]"
-              style={{ fontFamily: "var(--font-sf-pro)" }}
+        {/* Right: Swiper carousel, clipped to column */}
+        <div className="md:col-span-7 min-w-0">
+          <div data-web-carousel className="web-carousel overflow-hidden">
+            <Swiper
+              modules={[Navigation, Keyboard]}
+              slidesPerView="auto"
+              spaceBetween={16}
+              speed={600}
+              loop
+              loopAdditionalSlides={3}
+              keyboard={{ enabled: true }}
+              allowTouchMove
+              grabCursor
+              onSwiper={(s) => {
+                swiperRef.current = s;
+              }}
             >
-              {active.title}
-            </p>
-            {active.subtitle && (
-              <p
-                className="text-muted text-[14px] tracking-[-0.28px]"
-                style={{ fontFamily: "var(--font-siyuan)" }}
-              >
-                {active.subtitle}
-              </p>
-            )}
+              {projects.map((p, i) => {
+                const idxPadded = String(i + 1).padStart(2, "0");
+                return (
+                  <SwiperSlide
+                    key={p.slug}
+                    className="!w-[70vw] md:!w-[calc((100vw-2*var(--container-px))/4)]"
+                  >
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${p.title} (${i + 1} of ${total})`}
+                      className="card-lift block"
+                    >
+                      <div className="relative aspect-[3/4] rounded-md overflow-hidden bg-surface border border-edge shadow-window">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={p.thumbnail}
+                          alt={p.title}
+                          loading="lazy"
+                          decoding="async"
+                          draggable={false}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+
+                        {/* Active-slide overlay — title · index */}
+                        <div className="slide-label absolute inset-x-0 bottom-0 p-3 md:p-4 pointer-events-none">
+                          <div
+                            aria-hidden="true"
+                            className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/55 to-transparent"
+                          />
+                          <div
+                            className="relative flex items-baseline gap-2 text-white text-[12px] md:text-[13px] leading-none"
+                            style={{ fontVariantNumeric: "tabular-nums" }}
+                          >
+                            <span className="opacity-75">
+                              {idxPadded} / {totalPadded}
+                            </span>
+                            <span className="opacity-50">·</span>
+                            <span className="font-medium truncate">{p.title}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </a>
+                  </SwiperSlide>
+                );
+              })}
+            </Swiper>
           </div>
-
-          <button
-            onClick={() => swiperRef.current?.slideNext()}
-            aria-label="Next project"
-            className="flex items-center gap-2 px-2 py-1 rounded-full border border-edge text-muted text-[12px] hover:border-edge-hover hover:text-fg transition-colors duration-200 justify-self-end"
-            style={{ fontFamily: "var(--font-sf-pro)" }}
-          >
-            next
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" width="11" height="11" aria-hidden="true">
-              <path d="M17 7 7 17" strokeWidth="2" />
-              <path d="m8 7 9 0 0 9" strokeWidth="2" />
-            </svg>
-          </button>
         </div>
-
       </div>
     </section>
   );

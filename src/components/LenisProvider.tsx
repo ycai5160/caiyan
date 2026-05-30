@@ -26,14 +26,21 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
+    // Observe the actual scrollable surface so content growth (e.g., images
+    // loading, padding edits during dev) re-syncs Lenis's scroll cap.
     const ro = new ResizeObserver(() => lenis.resize());
-    ro.observe(document.body);
+    ro.observe(document.documentElement);
+    const main = document.querySelector("main");
+    if (main) ro.observe(main);
 
     lenis.scrollTo(0, { immediate: true });
     const id = setTimeout(() => lenis.resize(), 150);
+    // Catch late-arriving images / fonts
+    const id2 = setTimeout(() => lenis.resize(), 600);
 
     return () => {
       clearTimeout(id);
+      clearTimeout(id2);
       ro.disconnect();
       lenis.destroy();
       gsap.ticker.remove(tick);

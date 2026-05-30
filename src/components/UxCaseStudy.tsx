@@ -1,161 +1,188 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const metaRows = [
-  { label: "Keywords", value: "内容创作 · 短视频 · AI 工具", flex: false },
-  { label: "Role",     value: "用户研究 · 产品设计",            flex: false },
-  { label: "Scope",    value: "MVP",            flex: false },
-  { label: "Year",     value: "2026",                          flex: false },
-  {
-    label: "Overview",
-    value: `Subflow 是一款面向视频创作者的 AI 字幕编辑工具。在转录误差不可避免的前提下，通过界面设计降低校对成本,具体策略包括在转录前减少可预见错误，并在编辑阶段协助创作者快速定位待修正区域。`,
-    flex: true,
-  },
-];
-
-const LABEL = "UX Design";
-
 export default function UxCaseStudy() {
-  const sectionRef     = useRef<HTMLElement>(null);
-  const imageRef       = useRef<HTMLDivElement>(null);
-  const accentRef      = useRef<HTMLParagraphElement>(null);
-  const projectTitleRef = useRef<HTMLParagraphElement>(null);
-  const metaRowsRef    = useRef<HTMLDivElement[]>([]);
-  const labelChars     = useRef<HTMLSpanElement[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const tipXRef = useRef<((v: number) => gsap.core.Tween) | null>(null);
+  const tipYRef = useRef<((v: number) => gsap.core.Tween) | null>(null);
 
-  useGSAP(() => {
-    if (!sectionRef.current) return;
+  useEffect(() => {
+    const el = tooltipRef.current;
+    if (!el) return;
+    gsap.set(el, { x: -9999, y: -9999, opacity: 0, scale: 0.96 });
+    tipXRef.current = gsap.quickTo(el, "x", { duration: 0.35, ease: "power3.out" });
+    tipYRef.current = gsap.quickTo(el, "y", { duration: 0.35, ease: "power3.out" });
+  }, []);
 
-    const chars = labelChars.current;
-    const rows  = metaRowsRef.current;
+  const handleTipEnter = (e: React.MouseEvent) => {
+    const el = tooltipRef.current;
+    if (!el) return;
+    gsap.set(el, { x: e.clientX, y: e.clientY });
+    gsap.to(el, { opacity: 1, scale: 1, duration: 0.22, ease: "power3.out" });
+  };
 
-    gsap.set(chars,  { y: "115%" });
-    gsap.set([accentRef.current, projectTitleRef.current], { y: 24, opacity: 0 });
-    gsap.set(rows,   { y: 20, opacity: 0 });
-    // clipPath wipe: no layout reflow, GPU-composited, reveals top→bottom
-    gsap.set(imageRef.current, { clipPath: "inset(0 0 100% 0)" });
+  const handleTipMove = (e: React.MouseEvent) => {
+    tipXRef.current?.(e.clientX);
+    tipYRef.current?.(e.clientY);
+  };
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        once: true,
-      },
-    });
+  const handleTipLeave = () => {
+    const el = tooltipRef.current;
+    if (!el) return;
+    gsap.to(el, { opacity: 0, scale: 0.96, duration: 0.18, ease: "power3.out" });
+  };
 
-    tl
-      .to(imageRef.current, { clipPath: "inset(0 0 0% 0)", duration: 1.2, ease: "power3.inOut" }, 0)
-      .to(chars, { y: 0, stagger: 0.04, duration: 0.7, ease: "power3.out" }, 0)
-      .to([accentRef.current, projectTitleRef.current], {
-        y: 0, opacity: 1, stagger: 0.12, duration: 0.8, ease: "power2.out",
-      }, 0.15)
-      .to(rows, { y: 0, opacity: 1, stagger: 0.07, duration: 0.6, ease: "power2.out" }, 0.3);
-  }, { scope: sectionRef });
-
-  labelChars.current  = [];
-  metaRowsRef.current = [];
+  useGSAP(
+    () => {
+      gsap.from("[data-ux-fade]", {
+        y: 16,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        stagger: 0.05,
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 82%",
+          once: true,
+        },
+      });
+    },
+    { scope: sectionRef }
+  );
 
   return (
     <section
       ref={sectionRef}
-      id="ux"
-      className="relative w-full flex flex-col md:flex-row md:h-screen md:min-h-[600px] gap-10 md:gap-12 lg:gap-16 px-6 py-10 md:p-16 lg:py-20 bg-bg"
+      id="product"
+      className="container-x"
+      style={{
+        paddingTop: "0",
+        paddingBottom: "var(--space-section-lg)",
+      }}
     >
-      {/* Left: image */}
       <div
-        ref={imageRef}
-        className="aspect-[4/3] w-full md:aspect-auto md:flex-1 md:h-auto min-w-0 overflow-hidden relative"
+        className="grid grid-cols-1 md:grid-cols-12"
+        style={{ columnGap: "var(--space-grid-gutter)", rowGap: "var(--space-stack-lg)" }}
       >
-        <Image
-          src="/New_uxcase.png"
-          alt="Subflow — UX case study"
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 50vw"
-          priority
-        />
-      </div>
-
-      {/* Right: content */}
-      <div className="md:flex-1 min-w-0 flex flex-col justify-between relative">
-
-        {/* Section label */}
-        <div className="flex flex-col gap-1">
-          <p
-            className="font-bold leading-[1] text-surface text-[clamp(36px,6vw,70px)] tracking-[-0.02em]"
-            style={{ fontFamily: "var(--font-sf-pro)" }}
+        {/* Left: text — clear 4-step hierarchy */}
+        <div className="md:col-span-5 flex flex-col">
+          {/* Section badge — Notion blue tag */}
+          <span
+            data-ux-fade
+            className="self-start inline-flex items-center px-2.5 py-0.5 rounded-full tag-blue text-[12px] font-medium"
           >
-            {[...LABEL].map((char, i) => (
-              <span key={i} style={{ display: "inline-block", overflow: "hidden", verticalAlign: "bottom" }}>
+            01 产品设计
+          </span>
+
+          {/* Title row — title left, year right (same pattern as section 02) */}
+          <div className="mt-14 md:mt-20 flex items-baseline justify-between gap-4">
+            <Link
+              data-ux-fade
+              href="/work/subflow"
+              className="group inline-flex items-center gap-2 text-fg text-[20px] md:text-[24px] font-semibold tracking-[-0.02em] leading-[1.25]"
+            >
+              <span className="relative">
+                Subflow／AI 字幕编辑工具
+                {/* Very transparent base underline */}
                 <span
-                  ref={(el) => { if (el) labelChars.current.push(el); }}
-                  style={{ display: "inline-block" }}
-                >
-                  {char === " " ? " " : char}
-                </span>
+                  className="absolute left-0 right-0 -bottom-1 h-px bg-fg/15"
+                  aria-hidden="true"
+                />
+                {/* Fill underline — sweeps in from left on hover */}
+                <span
+                  className="absolute left-0 right-0 -bottom-1 h-px bg-fg origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100"
+                  style={{ transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)" }}
+                  aria-hidden="true"
+                />
               </span>
-            ))}
-          </p>
+              <svg
+                viewBox="0 0 24 24"
+                width="1em"
+                height="1em"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="shrink-0 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                aria-hidden="true"
+              >
+                <path d="M7 17 17 7" />
+                <path d="M8 7h9v9" />
+              </svg>
+            </Link>
+            <p
+              data-ux-fade
+              className="text-muted text-[12px] md:text-[13px] shrink-0"
+            >
+              2026
+            </p>
+          </div>
+
+          {/* Description — body */}
           <p
-            ref={accentRef}
-            className="font-bold leading-5 text-accent text-[13px] md:text-[16px] tracking-[0.3rem]"
-            style={{ fontFamily: "var(--font-siyuan)" }}
+            data-ux-fade
+            className="text-secondary text-[14px] md:text-[15px] leading-[1.85] mt-7 md:mt-9 max-w-[58ch]"
           >
-            个人 UX 设计项目
+            聚焦视频创作者AI字幕工作流的独立UX案例研究，项目产出包括用户研究、洞察提取、问题定义及交互方案设计。使用Claude Code将核心流程转化为高保真可交互原型。
           </p>
         </div>
 
-        {/* Project detail */}
-        <div className="flex flex-col gap-5 md:gap-6 mt-8 md:mt-0">
-          <p
-            ref={projectTitleRef}
-            className="font-bold text-[clamp(20px,3.5vw,40px)] text-fg tracking-[-0.8px] leading-tight"
-            style={{ fontFamily: "var(--font-sf-pro)" }}
-          >
-            Subflow／AI 字幕编辑工具
-          </p>
-
-          <div className="flex flex-col">
-            {metaRows.map((row, i) => (
-              <div
-                key={row.label}
-                ref={(el) => { if (el) metaRowsRef.current.push(el); }}
-                className={`flex items-start py-2.5 md:py-3 border-b border-edge ${i === 0 ? "border-t" : ""}`}
-              >
-                <div className="shrink-0 w-24 md:w-32 lg:w-40">
-                  <span
-                    className="text-muted text-[12px] md:text-[14px] tracking-[-0.32px]"
-                    style={{ fontFamily: "var(--font-sf-pro)" }}
-                  >
-                    {row.label}
-                  </span>
-                </div>
-                <span
-                  className={`text-fg text-[12px] md:text-[13px] lg:text-[14px] tracking-[-0.28px] leading-relaxed ${row.flex ? "flex-1 min-w-0" : ""}`}
-                  style={{ fontFamily: "var(--font-siyuan)" }}
-                >
-                  {row.value}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <a
+        {/* Right: thumbnail */}
+        <div className="md:col-span-7 min-w-0">
+          <Link
+            data-ux-fade
             href="/work/subflow"
-            className="self-start mt-6 md:mt-8 inline-flex items-center gap-2 px-4 py-2.5 text-accent text-[13px] md:text-[14px] tracking-[-0.2px] border border-accent/30 hover:border-accent hover:gap-3 transition-[border-color,gap] duration-300"
-            style={{ fontFamily: "var(--font-sf-pro)" }}
+            aria-label="Subflow — AI 字幕编辑工具"
+            className="card-lift block w-full"
+            onMouseEnter={handleTipEnter}
+            onMouseMove={handleTipMove}
+            onMouseLeave={handleTipLeave}
           >
-            View Case Study
-            <span aria-hidden>→</span>
-          </a>
+            <div className="relative aspect-[4/3] rounded-md overflow-hidden bg-surface border border-edge shadow-window">
+              <Image
+                src="/New_uxcase.png"
+                alt="Subflow — AI 字幕编辑工具"
+                fill
+                sizes="(max-width: 768px) 100vw, 58vw"
+                className="object-cover"
+                priority
+              />
+            </div>
+          </Link>
+        </div>
+      </div>
+
+      {/* Cursor-tracking tooltip — light chip on Subflow image hover */}
+      <div
+        ref={tooltipRef}
+        className="fixed top-0 left-0 z-50 pointer-events-none hidden md:block"
+        aria-hidden="true"
+      >
+        <div className="ml-3 mt-3 px-3 py-1.5 rounded-md bg-bg text-fg text-[11px] font-medium tracking-[-0.01em] whitespace-nowrap inline-flex items-center gap-1.5 border border-edge shadow-window">
+          Click to open
+          <svg
+            viewBox="0 0 24 24"
+            width="10"
+            height="10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M7 17 17 7" />
+            <path d="M8 7h9v9" />
+          </svg>
         </div>
       </div>
     </section>

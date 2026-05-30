@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Analytics } from '@vercel/analytics/next';
-import { Noto_Sans_SC } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { Noto_Sans_SC, Geist } from "next/font/google";
 import "./globals.css";
 import LenisProvider from "@/components/LenisProvider";
-import CursorWrapper from "@/components/CursorWrapper";
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ["latin"],
@@ -12,9 +11,15 @@ const notoSansSC = Noto_Sans_SC({
   display: "swap",
 });
 
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--geist-sans",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "蔡言 · UXUI设计师",
-  description: "From design to live. — 蔡言个人作品集",
+  description: "蔡言个人作品集 — UXUI 设计师 / 创意开发者",
 };
 
 export default function RootLayout({
@@ -23,12 +28,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-CN" className={notoSansSC.variable}>
-      <head>
-        <link rel="preconnect" href="https://prod.spline.design" />
-      </head>
+    <html
+      lang="zh-CN"
+      className={`${notoSansSC.variable} ${geist.variable}`}
+    >
       <body>
-        <CursorWrapper />
         <LenisProvider>{children}</LenisProvider>
         <Analytics />
       </body>

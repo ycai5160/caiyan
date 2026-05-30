@@ -1,59 +1,58 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Semantic color tokens ────────────────────────────────── */
-  --color-bg:           #000000;   /* page background              */
-  --color-fg:           #ffffff;   /* primary text / foreground    */
-  --color-accent:       #f43e0c;   /* brand orange                 */
-  --color-surface:      #141414;   /* ghost / watermark text       */
-  --color-secondary:    #c3c3c3;   /* nav, footer text             */
-  --color-muted:        #747474;   /* meta labels, body copy       */
-  --color-edge:         #1e1e1e;   /* subtle divider borders       */
-  --color-edge-md:      #2a2a2a;   /* medium borders (pills)       */
-  --color-edge-lg:      #3a3a3a;   /* strong borders (buttons)     */
-  --color-edge-hover:   #555555;   /* border hover state           */
+  /* ── Semantic color tokens (Notion-warm light) ────────────── */
+  --color-bg:           #fbfaf7;   /* paper-warm off-white         */
+  --color-fg:           #191918;   /* warm near-black              */
+  --color-accent:       #191918;   /* (intentionally same as fg)   */
+  --color-surface:      #f1efeb;   /* Notion-style tag / block fill */
+  --color-surface-2:    #e7e5df;   /* stronger surface             */
+  --color-secondary:    #2c2b29;   /* warm dark gray for body      */
+  --color-muted:        #6f6d66;   /* warm grey for meta           */
+  --color-tertiary:     #a8a59f;   /* faint warm grey              */
+  --color-edge:         #ebeae6;   /* hairline dividers            */
+  --color-edge-md:      #c5c3bc;   /* chip borders                 */
+  --color-edge-lg:      #8c8a82;   /* strong borders, decorative   */
+  --color-edge-hover:   #4a4945;   /* border hover state           */
 }
 
-/* ── Non-color design tokens ──────────────────────────────── */
 :root {
-  --font-sf-pro: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+  --font-sans: "SF Pro Display", -apple-system, BlinkMacSystemFont,
     "Helvetica Neue", Arial, sans-serif;
+  --font-sf-pro: var(--font-sans);
   --font-siyuan: var(--noto-sc, "Noto Sans SC"), "Source Han Sans SC",
     "PingFang SC", "Microsoft YaHei", sans-serif;
 
-  --color-cursor: var(--color-fg);
-}
+  /* ── Notion-style tag tints — lighter, softer pastels ─────── */
+  --tag-blue-bg:   #e8f2f7;
+  --tag-blue-fg:   #3a82b3;
+  --tag-orange-bg: #fbf0e1;
+  --tag-orange-fg: #cc7e3a;
+  --tag-purple-bg: #f0eaf6;
+  --tag-purple-fg: #8a6dbc;
+  --tag-pink-bg:   #f8eaf2;
+  --tag-pink-fg:   #c25e95;
+  --tag-green-bg:  #e4f0ec;
+  --tag-green-fg:  #439183;
+  --tag-gray-bg:   #f0efeb;
+  --tag-gray-fg:   #767569;
 
-/* ─── Web design carousel ─── */
-.web-grid-col {
-  width: min(70vw, 540px);
-}
+  --container-px: clamp(20px, 4.4vw, 64px);
 
-.web-carousel .swiper-slide {
-  width: min(70vw, 540px) !important;
-}
+  /* Fluid vertical rhythm — varied by section weight */
+  --space-brand-top:    clamp(36px,  5vw,   80px);
+  --space-brand-bottom: clamp(96px, 14vw,  192px);
+  --space-section-lg:   clamp(80px, 12vw,  168px);  /* headline project */
+  --space-section-md:   clamp(64px, 10vw,  128px);  /* standard section */
+  --space-section-sm:   clamp(48px,  8vw,   96px);  /* compressed       */
+  --space-footer-top:   clamp(96px, 14vw,  192px);
+  --space-footer-bottom:clamp(28px,  4vw,   56px);
 
-.web-carousel .swiper-slide .slide-inner {
-  opacity: 0.3;
-  transform: scale(0.85);
-  transform-origin: center;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-
-.web-carousel .swiper-slide-active .slide-inner {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* ─── Case study reading typography ─── */
-@layer components {
-  .body-p {
-    color: var(--color-secondary);
-    font-size: 17px;
-    line-height: 1.88;
-    letter-spacing: -0.2px;
-    font-family: var(--font-siyuan);
-  }
+  /* Grid + within-section gaps */
+  --space-grid-gutter:  clamp(28px,  5vw,   72px);
+  --space-stack-lg:     clamp(28px,  3.5vw, 44px);
+  --space-stack-md:     clamp(16px,  2vw,   24px);
+  --space-bento-gap:    clamp(16px,  1.6vw, 22px);
 }
 
 @layer base {
@@ -63,17 +62,90 @@
     padding: 0;
   }
 
-  @media (pointer: fine) {
-    * {
-      cursor: none !important;
-    }
-  }
-
   html,
   body {
     height: 100%;
     background: var(--color-bg);
     color: var(--color-fg);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* SF Pro Display for Latin; falls through to Noto Sans SC for CJK glyphs */
+    font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont,
+      "Helvetica Neue", Arial, var(--noto-sc, "Noto Sans SC"),
+      "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   }
+
+  ::selection {
+    background: var(--color-fg);
+    color: var(--color-bg);
+  }
+}
+
+/* ─── Reading typography (case study) ─── */
+@layer components {
+  .body-p {
+    color: var(--color-secondary);
+    font-size: 16px;
+    line-height: 1.85;
+    letter-spacing: -0.1px;
+    font-family: var(--font-siyuan);
+  }
+
+  .container-x {
+    padding-left: var(--container-px);
+    padding-right: var(--container-px);
+  }
+
+  /* Notion-style tag color variants */
+  .tag-blue   { background: var(--tag-blue-bg);   color: var(--tag-blue-fg); }
+  .tag-orange { background: var(--tag-orange-bg); color: var(--tag-orange-fg); }
+  .tag-purple { background: var(--tag-purple-bg); color: var(--tag-purple-fg); }
+  .tag-pink   { background: var(--tag-pink-bg);   color: var(--tag-pink-fg); }
+  .tag-green  { background: var(--tag-green-bg);  color: var(--tag-green-fg); }
+  .tag-gray   { background: var(--tag-gray-bg);   color: var(--tag-gray-fg); }
+}
+
+/* ─── Web design carousel ─── */
+.web-carousel .slide-label {
+  opacity: 0;
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(6px);
+}
+.web-carousel .swiper-slide-active .slide-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Static card surface (no hover) ─── */
+.card-lift {
+  cursor: pointer;
+}
+
+/* ─── Mac-window ambient elevation ───
+   Two-layer shadow: close grounding + diffuse spread.
+   Soft enough to read as light, present enough to lift off white. */
+.shadow-window {
+  box-shadow:
+    0 1px 2px rgba(10, 10, 10, 0.04),
+    0 20px 40px -16px rgba(10, 10, 10, 0.06);
+}
+
+/* ─── Static underline link (no hover) ─── */
+.link-underline {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.4;
 }
