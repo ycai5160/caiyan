@@ -122,6 +122,17 @@
   cursor: pointer;
 }
 
+/* ─── Pre-hide GSAP scroll-fade targets so first paint is clean ───
+   GSAP's fromTo() will own the visible state once it kicks in. */
+[data-ux-fade],
+[data-web-fade],
+[data-web-carousel],
+[data-web-card],
+[data-core-fade],
+[data-core-card] {
+  opacity: 0;
+}
+
 /* ─── Mac-window ambient elevation ───
    Two-layer shadow: close grounding + diffuse spread.
    Soft enough to read as light, present enough to lift off white. */

@@ -33,29 +33,37 @@ export default function WebDesignSection() {
 
   useGSAP(
     () => {
-      gsap.from("[data-web-fade]", {
-        y: 16,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.05,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 82%",
-          once: true,
-        },
-      });
-      gsap.from("[data-web-carousel]", {
-        y: 24,
-        opacity: 0,
-        duration: 0.9,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: "[data-web-carousel]",
-          start: "top 85%",
-          once: true,
-        },
-      });
+      gsap.fromTo(
+        "[data-web-fade]",
+        { y: 16, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.05,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 82%",
+            once: true,
+          },
+        }
+      );
+      gsap.fromTo(
+        "[data-web-carousel]",
+        { y: 24, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: "[data-web-carousel]",
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
     },
     { scope: sectionRef }
   );

@@ -29,30 +29,38 @@ export default function SkillSection() {
 
   useGSAP(
     () => {
-      gsap.from("[data-core-fade]", {
-        y: 16,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.05,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 82%",
-          once: true,
-        },
-      });
-      gsap.from("[data-core-card]", {
-        y: 24,
-        opacity: 0,
-        duration: 0.7,
-        ease: "power3.out",
-        stagger: 0.08,
-        scrollTrigger: {
-          trigger: "[data-core-grid]",
-          start: "top 85%",
-          once: true,
-        },
-      });
+      gsap.fromTo(
+        "[data-core-fade]",
+        { y: 16, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.05,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 82%",
+            once: true,
+          },
+        }
+      );
+      gsap.fromTo(
+        "[data-core-card]",
+        { y: 24, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out",
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: "[data-core-grid]",
+            start: "top 85%",
+            once: true,
+          },
+        }
+      );
     },
     { scope: sectionRef }
   );

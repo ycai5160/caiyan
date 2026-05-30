@@ -43,18 +43,22 @@ export default function UxCaseStudy() {
 
   useGSAP(
     () => {
-      gsap.from("[data-ux-fade]", {
-        y: 16,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.05,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 82%",
-          once: true,
-        },
-      });
+      gsap.fromTo(
+        "[data-ux-fade]",
+        { y: 16, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.05,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 82%",
+            once: true,
+          },
+        }
+      );
     },
     { scope: sectionRef }
   );
